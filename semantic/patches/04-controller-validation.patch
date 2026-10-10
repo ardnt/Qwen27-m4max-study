@@ -1,0 +1,13 @@
+--- a/runtime/engine/SemanticPlanner.hpp
++++ b/runtime/engine/SemanticPlanner.hpp
+@@ -134,7 +134,9 @@
+     input.costs = stats_.costs;
+     input.costs.queueInterferenceMs = input.costs.snapshotMs * competingDecoders;
+     input.forecast.clear(); input.hints.clear();
+-    if (!cuts.empty()) {
++    // Validate geometry before division when constructing aligned candidates.
++    // plan() below still records Invalid and leaves placement to native fallback.
++    if (valid(input) && !cuts.empty()) {
+       const History &history = histories_[shape(prompt.size(), cuts)];
+       // Two documented pseudo-observations, then a rolling 64 transition window.
+       constexpr std::array<double, 4> prior{0.55, 0.15, 0.20, 0.10};

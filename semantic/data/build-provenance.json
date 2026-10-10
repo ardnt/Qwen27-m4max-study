@@ -1,0 +1,25 @@
+{
+  "source_identity": "semantic-v1-d3666816859b3a34845b982877e34a3498deecc0634270ba2903301c1fdd6a22",
+  "base_archive_sha256": "e8f7f49fc53b9c856b692fd709d39ab48aebdf6cb23ac59d478f697988f856e7",
+  "base_source_commit": "0d5a035ea26d1cc566e3c7ee4e08e5e06fa68cf7",
+  "provenance_limitation": "Pinned unchanged object archive reused; not a complete upstream source rebuild.",
+  "compiled_units": [
+    "Engine.cpp",
+    "NativeRuntime.cpp",
+    "Bootstrap.mm",
+    "Status.cpp",
+    "FdTransport.cpp",
+    "MemoryControl.cpp",
+    "NativeArguments.cpp",
+    "Linear.cpp",
+    "RuntimeResources.mm",
+    "AneFfnStartup.cpp",
+    "DraftAttention.cpp",
+    "DraftSelector.cpp",
+    "MetalBackend.mm",
+    "main.mm"
+  ],
+  "binary_sha256": "ebb3972229e9de7593c39f9c8fc6cb31a5c093e1afbf135e41f47269e09fa3ef",
+  "metal_library_sha256": "30dd9a792a07699ab95f8bda62d295568807bbb94429b9518f60f3b4746d8099",
+  "baseline_binary_sha256": "56304c2f8c9097f2018f27f88caf1924e05773d4596efb3506ed5a81a6ef5454"
+}

@@ -1,0 +1,11 @@
+--- a/ml_drift/common/gpu_model_builder.cc
++++ b/ml_drift/common/gpu_model_builder.cc
+@@ -1804,7 +1804,7 @@
+       hints_.Check(ModelHints::kPreferTextureWeights));
+ 
+   const int elements_count =
+-      GetTotalElementsCountForLayout(weights_desc, weights_shape) / 4;
++      GetTotalElementsCountForLayout(weights_desc, weights_shape) / 2;
+   std::vector<uint8_t> weights_data(elements_count);
+ 
+   if (std::holds_alternative<Tensor<OHWI, DataType::kInt4>>(weights)) {

@@ -1,0 +1,21 @@
+{
+  "case_ids": [
+    "long-python_edit-0",
+    "long-python_edit-1",
+    "long-python_edit-2",
+    "long-python_edit-3",
+    "long-python_edit-4",
+    "long-python_edit-5",
+    "long-python_edit-6"
+  ],
+  "reason": "Global WINDOW placeholder replacement also renamed DEFAULT_WINDOW_SECONDS. Original long-edit instructions referenced a nonexistent symbol; all seven excluded regardless of apparent match.",
+  "replacement_case_ids": [
+    "corrected-long-python_edit-0",
+    "corrected-long-python_edit-1",
+    "corrected-long-python_edit-2",
+    "corrected-long-python_edit-3",
+    "corrected-long-python_edit-4",
+    "corrected-long-python_edit-5",
+    "corrected-long-python_edit-6"
+  ]
+}

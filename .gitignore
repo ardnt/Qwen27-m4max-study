@@ -1,0 +1,5 @@
+__pycache__/
+.build/
+semantic/data/summary.json
+semantic/data/results.csv
+semantic/data/output-pairs.json

@@ -1,0 +1,38 @@
+{
+  "base_revision": "29e3d2b41a7128d7d5dd9cd1ba09f226cca14d22",
+  "files": [
+    {
+      "path": "MODULE.bazel",
+      "sha256": "44bf650268b3027d6ce0e65a49b06aadc540784ed5f0c31f9b33f224480411ea"
+    },
+    {
+      "path": "ml_drift/common/gpu_model_builder.cc",
+      "sha256": "2fe0e3716cb18eebe017765ceba3128fca9d614f6748ace6e25fbfc8cbf14ffb"
+    },
+    {
+      "path": "ml_drift/common/kernels/conv_wave_matrix.cc",
+      "sha256": "ebc505b71dfe82e1b8b548b69fba490c38612e44ed71ea88eb4062e8e32e1cd2"
+    },
+    {
+      "path": "ml_drift/common/kernels/fully_connected_util.cc",
+      "sha256": "057e86ccb61343389e1fd112b5c6207fc9ca2df3be00f47afeefefc9de905f9a"
+    },
+    {
+      "path": "ml_drift/metal/environment.mm",
+      "sha256": "3e360a9230d1dc1423bbe449ad41b012487d2f0e82a9f6d04fde775b5dc910b6"
+    },
+    {
+      "path": "third_party/flatbuffers/BUILD.bazel",
+      "sha256": "b9d551ff721becad66806d372156e6b379be58da35e85f779f5ffd40503da950"
+    }
+  ],
+  "patch_order": [
+    "build-compatibility.patch",
+    "int4-buffer-fix.patch",
+    "metal-mixed-precision.patch",
+    "metal-shared-memory.patch",
+    "m4-fused-prefill-experiment.patch"
+  ],
+  "sequential_apply": "passed",
+  "scope": "No fresh GPU build; exact local Git object source."
+}

@@ -1,0 +1,62 @@
+[
+  {
+    "rows": 64,
+    "runtime": "mixed_default",
+    "median_sync_wall_ms": 5.87975,
+    "min_sync_wall_ms": 5.875333,
+    "max_sync_wall_ms": 5.881125,
+    "final_vs_mlx_relative_l2_error": 0.0,
+    "intermediate_bytes": 5767168,
+    "allocated_bytes": 196296704
+  },
+  {
+    "rows": 64,
+    "runtime": "mixed_fused",
+    "median_sync_wall_ms": 5.8705,
+    "min_sync_wall_ms": 5.869666,
+    "max_sync_wall_ms": 5.880917,
+    "final_vs_mlx_relative_l2_error": 0.0,
+    "intermediate_bytes": 5767168,
+    "allocated_bytes": 196296704
+  },
+  {
+    "rows": 64,
+    "runtime": "splash",
+    "median_sync_wall_ms": 6.356708,
+    "min_sync_wall_ms": 6.356667,
+    "max_sync_wall_ms": 6.357542,
+    "final_vs_mlx_relative_l2_error": 0.00281566433707023,
+    "intermediate_bytes": null,
+    "allocated_bytes": null
+  },
+  {
+    "rows": 512,
+    "runtime": "mixed_default",
+    "median_sync_wall_ms": 33.761834,
+    "min_sync_wall_ms": 33.758417,
+    "max_sync_wall_ms": 33.76375,
+    "final_vs_mlx_relative_l2_error": 0.0,
+    "intermediate_bytes": 224395264,
+    "allocated_bytes": 419512320
+  },
+  {
+    "rows": 512,
+    "runtime": "mixed_fused",
+    "median_sync_wall_ms": 31.656875,
+    "min_sync_wall_ms": 31.652,
+    "max_sync_wall_ms": 31.662,
+    "final_vs_mlx_relative_l2_error": 0.0,
+    "intermediate_bytes": 46137344,
+    "allocated_bytes": 241254400
+  },
+  {
+    "rows": 512,
+    "runtime": "splash",
+    "median_sync_wall_ms": 34.847375,
+    "min_sync_wall_ms": 34.84175,
+    "max_sync_wall_ms": 34.850125,
+    "final_vs_mlx_relative_l2_error": 0.002840004811721,
+    "intermediate_bytes": null,
+    "allocated_bytes": null
+  }
+]

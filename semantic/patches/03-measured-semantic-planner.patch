@@ -1,0 +1,768 @@
+--- /dev/null
++++ b/runtime/engine/CostAwareCheckpoint.hpp
+@@ -0,0 +1,245 @@
++#pragma once
++
++#include <algorithm>
++#include <cmath>
++#include <cstdint>
++#include <limits>
++#include <span>
++#include <vector>
++
++namespace splash::engine::semantic {
++
++// Boundaries are placement hints only. Native token/image identity and complete
++// target + draft state still authorize reuse. No approximate semantic reuse.
++enum class Kind : uint8_t { LatestUser, EarlierUser, StablePrefix, ToolResult };
++struct Hint {
++  uint32_t tokens = 0;
++  Kind kind = Kind::LatestUser;
++};
++struct Forecast {
++  uint32_t overlap = 0;
++  uint32_t suffix = 0;
++  double expectedUses = 0.0;
++};
++struct Costs {
++  double bulkRowMs = 3.2;
++  double middleRowMs = 3.2;
++  double shortRowMs = 3.2;
++  double draftRowMs = 0.5;
++  double commandMs = 0.0;
++  double snapshotMs = 100.0;
++  double restoreMs = 100.0;
++  double retentionMsPerByte = 0.0;
++  double queueInterferenceMs = 0.0;
++  // Conservative priors, not measured timings. The engine replaces them with
++  // observations; receipts must distinguish initialized and observed values.
++};
++struct Input {
++  uint32_t resume = 0;
++  uint32_t replay = 0;
++  uint32_t page = 32;
++  uint32_t chunk = 2048;
++  uint32_t shortRows = 128;
++  uint32_t bulkRows = 512;
++  uint32_t draftWindow = 2048;
++  uint32_t maximumStates = 2;
++  uint64_t stateBytes = 0;
++  uint64_t maximumBytes = 0;
++  double minimumNetGainMs = 1.0;
++  bool growthPaused = false;
++  // Required rolling recovery/replay captures are preserved. Rolling points
++  // affect today's draft work, but are not assumed to survive for a future hit.
++  std::vector<uint32_t> required;
++  std::vector<Hint> hints;
++  std::vector<Forecast> forecast;
++  Costs costs;
++};
++enum class Reason : uint8_t { Selected, NotWorthwhile, MemoryBudget, Pressure, Invalid };
++struct Result {
++  std::vector<uint32_t> selected;
++  Reason reason = Reason::NotWorthwhile;
++  double baselineMs = 0.0;
++  double plannedMs = 0.0;
++  double expectedSavedMs = 0.0;
++  double additionalCaptureMs = 0.0;
++  uint64_t retainedBytes = 0;
++  uint64_t baselineDraftRows = 0;
++  uint64_t plannedDraftRows = 0;
++  uint32_t candidateCount = 0;
++  uint32_t transitions = 0;
++};
++
++inline bool finiteNonnegative(double value) noexcept {
++  return std::isfinite(value) && value >= 0.0;
++}
++inline bool valid(const Input &in) noexcept {
++  const Costs &c = in.costs;
++  if (!in.page || !in.chunk || !in.draftWindow || !in.stateBytes ||
++      in.resume > in.replay || in.resume % in.page || in.replay % in.page ||
++      in.shortRows >= in.bulkRows || in.bulkRows > in.chunk || in.maximumStates > 8 ||
++      in.hints.size() > 64 || in.forecast.size() > 66 || in.required.size() > 256 ||
++      !finiteNonnegative(in.minimumNetGainMs)) return false;
++  for (double v : {c.bulkRowMs, c.middleRowMs, c.shortRowMs, c.draftRowMs, c.commandMs,
++                   c.snapshotMs, c.restoreMs, c.retentionMsPerByte,
++                   c.queueInterferenceMs})
++    if (!finiteNonnegative(v)) return false;
++  if (c.bulkRowMs == 0.0 || c.middleRowMs == 0.0 || c.shortRowMs == 0.0) return false;
++  uint32_t previous = in.resume;
++  for (uint32_t b : in.required) {
++    if (b <= previous || b > in.replay || b % in.page) return false;
++    previous = b;
++  }
++  for (const Forecast &f : in.forecast)
++    if (!finiteNonnegative(f.expectedUses) || f.expectedUses > 1000000.0 ||
++        uint64_t{f.overlap} + f.suffix > UINT32_MAX) return false;
++  return true;
++}
++
++// Dispatch lengths, not physical decode lanes. An extra split can push a
++// formerly large tail below the ANE threshold or into the register route.
++inline double targetCost(const Input &in, uint32_t begin, uint32_t end) noexcept {
++  if (end <= begin) return 0.0;
++  const uint32_t rows = end - begin;
++  const uint32_t full = rows / in.chunk, tail = rows % in.chunk;
++  const double tailRate = tail <= in.shortRows ? in.costs.shortRowMs :
++                          tail >= in.bulkRows ? in.costs.bulkRowMs : in.costs.middleRowMs;
++  return double(full) * (in.costs.commandMs + in.chunk * in.costs.bulkRowMs) +
++         (tail ? in.costs.commandMs + tail * tailRate : 0.0);
++}
++inline uint64_t draftRows(const Input &in, uint32_t begin, uint32_t end) noexcept {
++  return std::min(in.draftWindow, end - begin);
++}
++inline double futureCost(const Input &in, uint32_t resume, const Forecast &f) noexcept {
++  if (f.overlap < resume) return 0.0;
++  const uint32_t end = f.overlap + f.suffix;
++  return targetCost(in, resume, end) +
++         in.costs.draftRowMs * draftRows(in, resume, end) +
++         (resume ? in.costs.restoreMs : 0.0);
++}
++
++// The current prefill includes mandatory recovery snapshots between two
++// retained nodes. Its draft windows overlap/continue exactly as planDraftContext
++// does: charge min(window, distance), not a fresh full window per checkpoint.
++inline double currentSegment(const Input &in, uint32_t begin, uint32_t end,
++                             uint64_t *draft = nullptr) noexcept {
++  double cost = 0.0;
++  uint32_t at = begin;
++  uint64_t rows = 0;
++  for (uint32_t b : in.required) {
++    if (b <= begin || b >= end) continue;
++    cost += targetCost(in, at, b);
++    rows += draftRows(in, at, b);
++    at = b;
++  }
++  cost += targetCost(in, at, end);
++  rows += draftRows(in, at, end);
++  if (draft) *draft += rows;
++  return cost + in.costs.draftRowMs * rows;
++}
++inline double captureCost(const Input &in, uint32_t at) noexcept {
++  const bool alreadyRequired = std::binary_search(in.required.begin(), in.required.end(), at);
++  return (alreadyRequired ? 0.0 : in.costs.snapshotMs + in.costs.queueInterferenceMs) +
++         in.stateBytes * in.costs.retentionMsPerByte;
++}
++inline double futureInterval(const Input &in, uint32_t begin, uint32_t end) noexcept {
++  double cost = 0.0;
++  for (const Forecast &f : in.forecast)
++    if (f.overlap >= begin && f.overlap < end)
++      cost += f.expectedUses * futureCost(in, begin, f);
++  return cost;
++}
++inline double evaluate(const Input &in, std::span<const uint32_t> selected,
++                       uint64_t *draft = nullptr) noexcept {
++  uint32_t at = in.resume;
++  double score = 0.0;
++  for (uint32_t b : selected) {
++    score += currentSegment(in, at, b, draft) + futureInterval(in, at, b) + captureCost(in, b);
++    at = b;
++  }
++  return score + currentSegment(in, at, in.replay, draft) + futureInterval(in, at, in.replay);
++}
++
++// A shortest path through ordinary retained checkpoints. Each overlap outcome
++// is charged once to its deepest reusable predecessor. State-count and byte
++// budgets constrain the path. Required progress captures stay on every edge.
++// O(N^2 K + N^2 (M+F)), bounded N <= 64, K <= 8. The selection is optimal only
++// under this cost/forecast model; actual cache retention is still a confounder.
++inline Result plan(const Input &in) {
++  Result out;
++  if (!valid(in)) { out.reason = Reason::Invalid; return out; }
++  out.baselineMs = evaluate(in, {}, &out.baselineDraftRows);
++  if (!std::isfinite(out.baselineMs)) { out = {}; out.reason = Reason::Invalid; return out; }
++  out.plannedMs = out.baselineMs;
++  out.plannedDraftRows = out.baselineDraftRows;
++  if (in.growthPaused) { out.reason = Reason::Pressure; return out; }
++  const uint32_t budget = static_cast<uint32_t>(std::min<uint64_t>(
++      in.maximumStates, in.maximumBytes / in.stateBytes));
++  if (!budget) { out.reason = Reason::MemoryBudget; return out; }
++  if (std::none_of(in.forecast.begin(), in.forecast.end(), [&](const Forecast &f) {
++        return f.expectedUses > 0.0 && f.overlap >= in.resume && f.overlap < in.replay;
++      })) return out;
++  std::vector<uint32_t> positions{in.resume};
++  for (const Hint &hint : in.hints) {
++    const uint32_t b = hint.tokens / in.page * in.page;
++    if (b > in.resume && b < in.replay) positions.push_back(b);
++  }
++  std::sort(positions.begin(), positions.end());
++  positions.erase(std::unique(positions.begin(), positions.end()), positions.end());
++  out.candidateCount = static_cast<uint32_t>(positions.size() - 1);
++  positions.push_back(in.replay);
++  const size_t n = positions.size(), terminal = n - 1;
++  std::vector<double> edge(n * n, 0.0);
++  for (size_t i = 0; i < terminal; ++i)
++    for (size_t j = i + 1; j < n; ++j)
++      edge[i*n+j] = currentSegment(in, positions[i], positions[j]) +
++                    futureInterval(in, positions[i], positions[j]) +
++                    (j != terminal ? captureCost(in, positions[j]) : 0.0);
++  const double infinity = std::numeric_limits<double>::infinity();
++  std::vector<double> score((budget + 1) * n, infinity);
++  std::vector<size_t> previous(score.size(), n);
++  score[0] = 0.0;
++  double best = out.baselineMs;
++  size_t last = 0;
++  uint32_t bestCount = 0;
++  for (uint32_t count = 0; count <= budget; ++count) {
++    for (size_t i = 0; i < terminal; ++i) {
++      const double prefix = score[count*n+i];
++      if (!std::isfinite(prefix)) continue;
++      const double total = prefix + edge[i*n+terminal];
++      if (total < best - 1e-9) { best = total; last = i; bestCount = count; }
++      if (count == budget) continue;
++      for (size_t j = i + 1; j < terminal; ++j) {
++        ++out.transitions;
++        const double candidate = prefix + edge[i*n+j];
++        const size_t index = (count+1)*n+j;
++        if (candidate < score[index] - 1e-9) {
++          score[index] = candidate;
++          previous[index] = i;
++        }
++      }
++    }
++  }
++  if (!std::isfinite(best) || out.baselineMs - best < in.minimumNetGainMs) return out;
++  for (uint32_t count = bestCount; count; --count) {
++    out.selected.push_back(positions[last]);
++    last = previous[count*n+last];
++  }
++  std::reverse(out.selected.begin(), out.selected.end());
++  out.plannedDraftRows = 0;
++  out.plannedMs = evaluate(in, out.selected, &out.plannedDraftRows);
++  out.expectedSavedMs = out.baselineMs - out.plannedMs;
++  const double oldNow = currentSegment(in, in.resume, in.replay);
++  uint32_t at = in.resume;
++  double newNow = 0.0;
++  for (uint32_t b : out.selected) {
++    newNow += currentSegment(in, at, b) + captureCost(in, b);
++    at = b;
++  }
++  newNow += currentSegment(in, at, in.replay);
++  out.additionalCaptureMs = newNow - oldNow;
++  out.retainedBytes = out.selected.size() * in.stateBytes;
++  out.reason = out.selected.empty() ? Reason::NotWorthwhile : Reason::Selected;
++  return out;
++}
++
++} // namespace splash::engine::semantic
+--- a/runtime/engine/Engine.cpp
++++ b/runtime/engine/Engine.cpp
+@@ -3,6 +3,7 @@
+ 
+ #include <algorithm>
+ #include <cmath>
++#include <chrono>
+ #include <cstdlib>
+ #include <limits>
+ #include <stdexcept>
+@@ -28,6 +29,13 @@
+ // draft-context rows; a later request must save at least that much prefill.
+ constexpr uint32_t kMinimumJunctionGain = model::ExecutionLimits::draftContextTokens;
+ 
++uint64_t observedDraftRows(const model::Model &model) noexcept {
++  const auto *runtime = dynamic_cast<const model::RuntimeModel *>(&model);
++  if (!runtime) return 0;
++  const auto counters = runtime->telemetry();
++  return counters.draftContextRowsActive + counters.draftContextRowsMaterialization;
++}
++
+ // Opt-in, tokenizer-verified marker. No model-specific token IDs are built in.
+ const std::vector<uint32_t> &branchMarker() {
+   static const std::vector<uint32_t> marker = [] {
+@@ -148,6 +156,9 @@
+   requestState.request = std::move(value);
+   const Request &stored =
+       requests_.emplace(id, std::move(requestState)).first->second;
++  if (stored.request.images.empty())
++    semanticPlanner_.observePrompt(stored.exactTokens, branchMarker(),
++                                    KvCache::pageTokens, promptReplayBoundary(stored));
+   scheduler_.submit(
+       {.id = id,
+        .priority = stored.request.priority,
+@@ -283,9 +294,11 @@
+     Pending command = std::move(*pending_);
+     pending_.reset();
+     std::vector<ModelStepResult> results = command.ticket->wait();
++    const uint64_t draftRows = semanticPlanner_.enabled() ?
++        observedDraftRows(model_) - command.draftRowsBefore : 0;
+     apply(command.plan, results, command.ticket->wallMilliseconds(),
+           now - command.startedMilliseconds,
+-          command.ticket->prefillTimingIsRepresentative(), now);
++          command.ticket->prefillTimingIsRepresentative(), draftRows, now);
+     busySinceMilliseconds_ = now;
+     sweepTerminal();
+     return true;
+@@ -305,6 +318,7 @@
+     std::vector<ModelBatchItem> items;
+     switch (prepare(*plan, items, now)) {
+     case Prepared::Runnable: {
++      const uint64_t draftRowsBefore = semanticPlanner_.enabled() ? observedDraftRows(model_) : 0;
+       std::unique_ptr<ModelBatchTicket> ticket =
+           model_.submit(*plan, items, completionNotifier_);
+       if (!ticket) {
+@@ -312,7 +326,7 @@
+       }
+       scheduler_.commit(*plan, excluded);
+       pending_ = Pending{std::move(*plan), std::move(ticket),
+-                         busySinceMilliseconds_.value_or(now)};
++                         busySinceMilliseconds_.value_or(now), draftRowsBefore};
+       return true;
+     }
+     case Prepared::Yielded:
+@@ -411,6 +425,7 @@
+   result.scheduler = scheduler_.snapshot();
+   result.resources = cache_.snapshot();
+   result.writeBehind = writeBehind_.snapshot();
++  result.semanticPlanner = semanticPlanner_.snapshot();
+   return result;
+ }
+ 
+@@ -799,9 +814,14 @@
+       active, resumeBoundary, lookup.junctionBoundary);
+   std::unique_ptr<StateRestore> transfer;
+   if (lookup.state) {
++    const auto restoreBegin = std::chrono::steady_clock::now();
+     transfer = model_.beginRestore(requestId, resumeBoundary, lookup.state->state(),
+                                    draft.restoresDraftState,
+                                    completionNotifier_);
++    // Only a synchronous resident restore has a complete CPU wall-time sample.
++    if (!transfer && lookup.state->state()->residentBytes())
++      semanticPlanner_.observeRestore(std::chrono::duration<double, std::milli>(
++          std::chrono::steady_clock::now() - restoreBegin).count());
+   }
+   if (transfer || cache_.kvRestoreStatus(requestId) == KvRestoreStatus::Pending) {
+     active.restore.emplace(Request::Restore{
+@@ -974,19 +994,42 @@
+            stateBoundary, latestReplayBoundary, config_.prefillCheckpointTokens)) {
+     addStateBoundary(active, stateBoundary, checkpoint, true);
+   }
+-  if (junctionBoundary >= stateBoundary + kMinimumJunctionGain)
+-    addStateBoundary(active, stateBoundary, junctionBoundary, false);
+-  if (const auto anchor = branchAnchor(
+-          std::span(active.exactTokens).first(active.promptTokens), branchMarker(),
+-          KvCache::pageTokens, stateBoundary, latestReplayBoundary, kMinimumJunctionGain))
+-    addStateBoundary(active, stateBoundary, *anchor, false);
+   addStateBoundary(active, stateBoundary, latestReplayBoundary,
+                    latestReplayBoundary != promptReplayBoundary(active));
+-  // A resumed lane below its prompt's replay point lost that state; it
+-  // rebuilds the one its conversation's next turn resumes from on the way.
+   addStateBoundary(active, stateBoundary, promptReplayBoundary(active), false);
+-
+   static_cast<void>(addSharedPrefillBoundaries(active, stateBoundary));
++
++  bool legacy = !semanticPlanner_.applies() || !active.request.images.empty();
++  if (semanticPlanner_.enabled() && active.request.images.empty() && !active.skipCache) {
++    semantic::Input input;
++    input.resume = stateBoundary; input.replay = latestReplayBoundary;
++    input.page = KvCache::pageTokens;
++    input.chunk = model::ExecutionLimits::prefillTokenBudget;
++    input.draftWindow = model::ExecutionLimits::draftContextTokens;
++    input.stateBytes = model_.snapshotBytes();
++    // Admission only caps *additional* semantic states. The native governor,
++    // leases, progress/replay states and reclaim classes remain authoritative.
++    input.maximumBytes = 512ULL * 1024 * 1024;
++    input.maximumStates = 2;
++    input.growthPaused = config_.growthPaused();
++    for (const auto &boundary : active.stateBoundaries)
++      input.required.push_back(boundary.tokens);
++    const auto decision = semanticPlanner_.choose(std::move(input),
++        std::span(active.exactTokens).first(active.promptTokens), branchMarker(),
++        junctionBoundary, scheduler_.snapshot().decoding);
++    if (decision.reason == semantic::Reason::Invalid) legacy = true;
++    if (semanticPlanner_.applies())
++      for (uint32_t tokens : decision.selected)
++        addStateBoundary(active, stateBoundary, tokens, false);
++  }
++  if (legacy) {
++    if (junctionBoundary >= stateBoundary + kMinimumJunctionGain)
++      addStateBoundary(active, stateBoundary, junctionBoundary, false);
++    if (const auto anchor = branchAnchor(
++            std::span(active.exactTokens).first(active.promptTokens), branchMarker(),
++            KvCache::pageTokens, stateBoundary, latestReplayBoundary, kMinimumJunctionGain))
++      addStateBoundary(active, stateBoundary, *anchor, false);
++  }
+   return pendingDraftStatePlan(active, stateBoundary);
+ }
+ 
+@@ -1115,6 +1158,7 @@
+         ++failures;
+         continue;
+       }
++      const auto captureBegin = std::chrono::steady_clock::now();
+       std::shared_ptr<const CompositeState> state = model_.snapshot(active.request.id);
+       if (!state && replay && resident && !checkpointShared(active) &&
+           retireCheckpoint(active))
+@@ -1144,6 +1188,8 @@
+           ++counters_.recycledStatePublications;
+       }
+       if (state) {
++        semanticPlanner_.observeCapture(std::chrono::duration<double, std::milli>(
++            std::chrono::steady_clock::now() - captureBegin).count());
+         cache_.publishCompositeState(block, std::move(state), checkpoint);
+         ++publications;
+       } else if (cache_.reuseStoredState(block, checkpoint)) {
+@@ -1589,7 +1635,7 @@
+ void Engine::apply(const BatchPlan &plan,
+                    std::span<const ModelStepResult> results,
+                    double wallMilliseconds, double cycleMilliseconds,
+-                   bool representativePrefillTiming, double now) {
++                   bool representativePrefillTiming, uint64_t draftRows, double now) {
+   if (results.size() != plan.items.size()) {
+     throw std::logic_error("model result count changed");
+   }
+@@ -1709,6 +1755,8 @@
+       active.maskRequestedMilliseconds = now;
+     }
+   }
++  if (plan.kind == WorkKind::Prefill && plan.width() == 1 && representativePrefillTiming)
++    semanticPlanner_.observeCommand(inputTokens, draftRows, wallMilliseconds);
+   scheduler_.complete(plan, schedulerResults, wallMilliseconds,
+                       representativePrefillTiming);
+   events_.batchCompleted(plan.kind, plan.width(), inputTokens, outputTokens,
+--- a/runtime/engine/Engine.hpp
++++ b/runtime/engine/Engine.hpp
+@@ -4,6 +4,7 @@
+ #include "engine/Cache.hpp"
+ #include "engine/MemoryGovernor.hpp"
+ #include "engine/Scheduler.hpp"
++#include "engine/SemanticPlanner.hpp"
+ #include "engine/Types.hpp"
+ #include "engine/WriteBehind.hpp"
+ 
+@@ -123,6 +124,7 @@
+   uint64_t resourceReplayTokens = 0;
+   // A persistent tier's newest restore points (WriteBehind).
+   WriteBehindSnapshot writeBehind;
++  semantic::PlannerSnapshot semanticPlanner;
+ };
+ 
+ // KV blocks define prefix identity; composite recurrent state is attached
+@@ -148,6 +150,8 @@
+   void submit(EngineRequest request);
+   void observePrefill(uint32_t rows, double wallMilliseconds) {
+     scheduler_.observePrefill(rows, wallMilliseconds);
++    // Startup reports combined target/draft prefill, not an isolated kernel.
++    semanticPlanner_.observeCommand(rows, rows, wallMilliseconds);
+   }
+   void cancel(uint64_t requestId);
+   void failRequest(uint64_t requestId, LaneOutcome outcome, std::string message);
+@@ -297,6 +301,7 @@
+     // Where the engine's time for this command starts: the previous
+     // command's retirement when the engine stayed busy, else its plan.
+     double startedMilliseconds = 0.0;
++    uint64_t draftRowsBefore = 0;
+   };
+   enum class Prepared : uint8_t {
+     // Some lanes were admitted and the plan runs with them.
+@@ -453,7 +458,7 @@
+   void signalResourceProgress() noexcept;
+   void apply(const BatchPlan &plan, std::span<const ModelStepResult> results,
+              double wallMilliseconds, double cycleMilliseconds,
+-             bool representativePrefillTiming, double nowMilliseconds);
++             bool representativePrefillTiming, uint64_t draftRows, double nowMilliseconds);
+   // Whether the command in flight holds the request's lane.
+   [[nodiscard]] bool inFlight(uint64_t requestId) const;
+   // Ends a request early. While its command or restore runs, the first end
+@@ -489,6 +494,7 @@
+   model::Model &model_;
+   EngineEventSink &events_;
+   Scheduler scheduler_;
++  semantic::SemanticPlanner semanticPlanner_;
+   std::unordered_map<uint64_t, Request> requests_;
+   // Pressure preempted work, a lane is still resident, and memory is still
+   // short (growth is paused or allocationFailed_), up to the drain's end.
+--- /dev/null
++++ b/runtime/engine/SemanticPlanner.hpp
+@@ -0,0 +1,223 @@
++#pragma once
++
++#include "engine/CostAwareCheckpoint.hpp"
++
++#include <array>
++#include <chrono>
++#include <cstdlib>
++#include <deque>
++#include <string_view>
++
++namespace splash::engine::semantic {
++
++enum class Mode : uint8_t { Off, Shadow, On };
++struct PlannerSnapshot {
++  Mode mode = Mode::Off;
++  uint64_t decisions = 0, selectedStates = 0, abstentions = 0, invalid = 0;
++  uint64_t costSamples = 0, captureSamples = 0, restoreSamples = 0;
++  uint64_t overlapObservations = 0, unrelated = 0;
++  double lastPlanUs = 0.0, maximumPlanUs = 0.0;
++  double expectedNetSavedMs = 0.0, additionalCaptureMs = 0.0;
++  uint64_t stateBytes = 0, retainedBytes = 0;
++  uint64_t baselineDraftRows = 0, plannedDraftRows = 0;
++  Costs costs;
++  std::vector<uint32_t> selected;
++  Reason reason = Reason::NotWorthwhile;
++  uint32_t candidates = 0;
++  std::array<double, 4> probabilities{0.55, 0.15, 0.20, 0.10};
++  uint32_t resume = 0, replay = 0;
++  Costs decisionCosts;
++  std::vector<Forecast> forecast;
++};
++
++// Per-engine, bounded, CPU-only learner. Observations are exact token overlaps,
++// including misses; existing cache placements cannot censor its observations.
++// Role markers guide *where to capture*, never authorize a cache hit.
++class SemanticPlanner final {
++public:
++  explicit SemanticPlanner(Mode mode = environmentMode()) { stats_.mode = mode; }
++  [[nodiscard]] static Mode environmentMode() noexcept {
++    const char *value = std::getenv("SPLASH_SEMANTIC_PLANNER");
++    if (!value) return Mode::Off;
++    if (std::string_view(value) == "on") return Mode::On;
++    if (std::string_view(value) == "shadow") return Mode::Shadow;
++    return Mode::Off;
++  }
++  [[nodiscard]] bool enabled() const noexcept { return stats_.mode != Mode::Off; }
++  [[nodiscard]] bool applies() const noexcept { return stats_.mode == Mode::On; }
++  [[nodiscard]] PlannerSnapshot snapshot() const { return stats_; }
++
++  // Counts use the model's *actual* committed target/draft rows. Coefficients
++  // are regularized nonnegative regression estimates of complete command wall
++  // time, not invented measurements of separate kernels. Five weak priors
++  // keep underidentified routes conservative until diverse commands arrive.
++  void observeCommand(uint32_t rows, uint64_t draftRows, double wallMs) noexcept {
++    if (!enabled() || !rows || rows > 2048 || draftRows > 4096 ||
++        !std::isfinite(wallMs) || wallMs <= 0.0 || wallMs > 30000.0) return;
++    const std::array<double, 5> x{
++        rows >= 512 ? rows / 512.0 : 0.0,
++        rows > 128 && rows < 512 ? rows / 512.0 : 0.0,
++        rows <= 128 ? rows / 512.0 : 0.0, draftRows / 512.0, 1.0};
++    // Exponential decay bounds old data's influence after thermal/load drift.
++    for (size_t i = 0; i < 5; ++i) {
++      rhs_[i] = 0.985 * rhs_[i] + x[i] * wallMs;
++      for (size_t j = 0; j < 5; ++j)
++        gram_[i][j] = 0.985 * gram_[i][j] + x[i] * x[j];
++    }
++    ++stats_.costSamples;
++    fit();
++  }
++  void observeCapture(double ms) noexcept {
++    if (!enabled() || !std::isfinite(ms) || ms <= 0.0 || ms > 30000.0) return;
++    stats_.costs.snapshotMs = stats_.captureSamples ?
++        0.8 * stats_.costs.snapshotMs + 0.2 * ms : ms;
++    ++stats_.captureSamples;
++  }
++  void observeRestore(double ms) noexcept {
++    if (!enabled() || !std::isfinite(ms) || ms < 0.0 || ms > 30000.0) return;
++    stats_.costs.restoreMs = stats_.restoreSamples ?
++        0.8 * stats_.costs.restoreMs + 0.2 * ms : ms;
++    ++stats_.restoreSamples;
++  }
++
++  [[nodiscard]] static std::vector<uint32_t>
++  userBoundaries(std::span<const uint32_t> prompt, std::span<const uint32_t> marker,
++                 uint32_t page) {
++    std::vector<uint32_t> result;
++    if (marker.empty() || !page || prompt.size() < marker.size()) return result;
++    for (size_t i = 0; i + marker.size() <= prompt.size(); ++i) {
++      if (prompt[i] != marker[0] ||
++          !std::equal(marker.begin(), marker.end(), prompt.begin() + i)) continue;
++      const auto at = static_cast<uint32_t>(i / page * page);
++      if (result.empty() || result.back() != at) result.push_back(at);
++      // Only recent conversation turns enter the planner, at most 24.
++      if (result.size() > 24) result.erase(result.begin());
++      i += marker.size() - 1;
++    }
++    return result;
++  }
++
++  void observePrompt(std::span<const uint32_t> prompt,
++                     std::span<const uint32_t> marker, uint32_t page,
++                     uint32_t replay) {
++    if (!enabled() || prompt.size() > 65536) return;
++    const auto cuts = userBoundaries(prompt, marker, page);
++    if (cuts.empty()) return;
++    if (!previousTokens_.empty()) {
++      History &history = histories_[previousShape_];
++      const auto mismatch = std::mismatch(previousTokens_.begin(), previousTokens_.end(),
++                                           prompt.begin(), prompt.end());
++      const auto overlap = static_cast<uint32_t>(mismatch.first - previousTokens_.begin());
++      // Exact repeat/continuation, latest turn edit, earlier edit, unrelated.
++      const uint8_t outcome = overlap >= previousReplay_ ? 2 :
++          overlap >= previousCuts_.back() ? 0 :
++          previousCuts_.size() > 1 && overlap >= std::max(32U, previousCuts_.front()) ? 1 : 3;
++      if (history.outcomes.size() == 64) {
++        --history.counts[history.outcomes.front()]; history.outcomes.pop_front();
++      }
++      history.outcomes.push_back(outcome); ++history.counts[outcome];
++      ++stats_.overlapObservations;
++      if (outcome == 3) ++stats_.unrelated;
++    }
++    // Attribute the outcome to the *previous* shape, even when an earlier edit
++    // changes a multi-turn request into a single-turn request.
++    previousTokens_.assign(prompt.begin(), prompt.end());
++    previousCuts_ = cuts; previousReplay_ = replay;
++    previousShape_ = shape(prompt.size(), cuts);
++  }
++
++  Result choose(Input input, std::span<const uint32_t> prompt,
++                std::span<const uint32_t> marker, uint32_t observedJunction,
++                uint32_t competingDecoders) {
++    const auto begin = std::chrono::steady_clock::now();
++    const auto cuts = userBoundaries(prompt, marker, input.page);
++    input.costs = stats_.costs;
++    input.costs.queueInterferenceMs = input.costs.snapshotMs * competingDecoders;
++    input.forecast.clear(); input.hints.clear();
++    if (!cuts.empty()) {
++      const History &history = histories_[shape(prompt.size(), cuts)];
++      // Two documented pseudo-observations, then a rolling 64 transition window.
++      constexpr std::array<double, 4> prior{0.55, 0.15, 0.20, 0.10};
++      for (size_t i = 0; i < 4; ++i)
++        stats_.probabilities[i] = (history.counts[i] + 2.0 * prior[i]) /
++                                 (history.outcomes.size() + 2.0);
++      const uint32_t suffix = static_cast<uint32_t>(std::clamp<size_t>(
++          prompt.size() - cuts.back(), 32, 256));
++      const uint32_t latest = cuts.back();
++      input.hints.push_back({latest, Kind::LatestUser});
++      // The command-aligned alternative can trade 0..480 future rows for fewer
++      // split/tail commands. Page identity remains exact for either choice.
++      input.hints.push_back({latest / input.chunk * input.chunk, Kind::LatestUser});
++      input.hints.push_back({latest / input.bulkRows * input.bulkRows, Kind::LatestUser});
++      input.forecast.push_back({latest, suffix, stats_.probabilities[0]});
++      std::vector<uint32_t> earlier;
++      for (uint32_t at : cuts) if (at < latest) earlier.push_back(at);
++      if (observedJunction > input.resume && observedJunction < latest)
++        earlier.push_back(observedJunction);
++      std::sort(earlier.begin(), earlier.end());
++      earlier.erase(std::unique(earlier.begin(), earlier.end()), earlier.end());
++      for (uint32_t at : earlier) {
++        input.hints.push_back({at, Kind::EarlierUser});
++        input.hints.push_back({at / input.chunk * input.chunk, Kind::EarlierUser});
++        input.forecast.push_back({at, suffix,
++                                 stats_.probabilities[1] / earlier.size()});
++      }
++    }
++    Result result = plan(input);
++    ++stats_.decisions;
++    stats_.selectedStates += result.selected.size();
++    if (result.selected.empty()) ++stats_.abstentions;
++    if (result.reason == Reason::Invalid) ++stats_.invalid;
++    stats_.selected = result.selected; stats_.reason = result.reason;
++    stats_.candidates = result.candidateCount;
++    stats_.expectedNetSavedMs = result.expectedSavedMs;
++    stats_.additionalCaptureMs = result.additionalCaptureMs;
++    stats_.stateBytes = input.stateBytes; stats_.retainedBytes = result.retainedBytes;
++    stats_.resume = input.resume; stats_.replay = input.replay;
++    stats_.decisionCosts = input.costs; stats_.forecast = input.forecast;
++    stats_.baselineDraftRows = result.baselineDraftRows;
++    stats_.plannedDraftRows = result.plannedDraftRows;
++    stats_.lastPlanUs = std::chrono::duration<double, std::micro>(
++        std::chrono::steady_clock::now() - begin).count();
++    stats_.maximumPlanUs = std::max(stats_.maximumPlanUs, stats_.lastPlanUs);
++    return result;
++  }
++
++private:
++  struct History {
++    std::array<uint32_t, 4> counts{};
++    std::deque<uint8_t> outcomes;
++  };
++  static size_t shape(size_t tokens, const std::vector<uint32_t> &cuts) noexcept {
++    return cuts.size() > 1 ? 2 : cuts.back() > tokens / 2 ? 0 : 1;
++  }
++  void fit() noexcept {
++    constexpr std::array<double, 5> prior{3.2 * 512, 3.2 * 512, 3.2 * 512, 0.5 * 512, 0.0};
++    constexpr std::array<double, 5> ridge{1.0, 0.2, 0.05, 1.0, 0.1};
++    std::array<double, 5> theta{stats_.costs.bulkRowMs * 512,
++        stats_.costs.middleRowMs * 512, stats_.costs.shortRowMs * 512, stats_.costs.draftRowMs * 512,
++        stats_.costs.commandMs};
++    for (uint32_t iteration = 0; iteration < 32; ++iteration)
++      for (size_t i = 0; i < 5; ++i) {
++        double residual = rhs_[i] + ridge[i] * prior[i];
++        for (size_t j = 0; j < 5; ++j)
++          if (i != j) residual -= gram_[i][j] * theta[j];
++        theta[i] = std::max(i < 3 ? 0.0512 : 0.0,
++                           residual / (gram_[i][i] + ridge[i]));
++      }
++    stats_.costs.bulkRowMs = theta[0] / 512;
++    stats_.costs.middleRowMs = theta[1] / 512;
++    stats_.costs.shortRowMs = theta[2] / 512;
++    stats_.costs.draftRowMs = theta[3] / 512;
++    stats_.costs.commandMs = theta[4];
++  }
++  PlannerSnapshot stats_;
++  std::array<History, 3> histories_;
++  std::vector<uint32_t> previousTokens_, previousCuts_;
++  uint32_t previousReplay_ = 0;
++  size_t previousShape_ = 0;
++  std::array<std::array<double, 5>, 5> gram_{};
++  std::array<double, 5> rhs_{};
++};
++
++} // namespace splash::engine::semantic
+--- a/runtime/engine/Status.cpp
++++ b/runtime/engine/Status.cpp
+@@ -14,6 +14,53 @@
+ namespace {
+ 
+ const char *boolean(bool value) noexcept { return value ? "true" : "false"; }
++
++void appendSemanticPlanner(std::ostringstream &out, const semantic::PlannerSnapshot &s) {
++  constexpr std::string_view modes[]{"off", "shadow", "on"};
++  constexpr std::string_view reasons[]{"selected", "not_worthwhile", "memory_budget", "pressure", "invalid"};
++  out << "{\"mode\":" << json::quote(modes[static_cast<size_t>(s.mode)])
++      << ",\"decisions\":" << s.decisions << ",\"selected_states\":" << s.selectedStates
++      << ",\"abstentions\":" << s.abstentions << ",\"invalid\":" << s.invalid
++      << ",\"cost_samples\":" << s.costSamples << ",\"capture_samples\":" << s.captureSamples
++      << ",\"restore_samples\":" << s.restoreSamples
++      << ",\"overlap_observations\":" << s.overlapObservations << ",\"unrelated\":" << s.unrelated
++      << ",\"last_plan_us\":" << s.lastPlanUs << ",\"maximum_plan_us\":" << s.maximumPlanUs
++      << ",\"cost_scope\":\"regularized_command_wall_estimates_and_measured_cpu_capture_restore\""
++      << ",\"coefficients\":{\"bulk_row_ms\":" << s.costs.bulkRowMs
++      << ",\"middle_row_ms\":" << s.costs.middleRowMs
++      << ",\"short_row_ms\":" << s.costs.shortRowMs << ",\"draft_row_ms\":" << s.costs.draftRowMs
++      << ",\"command_ms\":" << s.costs.commandMs << ",\"snapshot_ms\":" << s.costs.snapshotMs
++      << ",\"restore_ms\":" << s.costs.restoreMs << "}"
++      << ",\"last_decision\":{\"reason\":" << json::quote(reasons[static_cast<size_t>(s.reason)])
++      << ",\"resume\":" << s.resume << ",\"replay\":" << s.replay
++      << ",\"candidates\":" << s.candidates << ",\"state_bytes\":" << s.stateBytes
++      << ",\"retained_bytes\":" << s.retainedBytes
++      << ",\"predicted_net_saved_ms\":" << s.expectedNetSavedMs
++      << ",\"predicted_additional_capture_ms\":" << s.additionalCaptureMs
++      << ",\"baseline_draft_rows\":" << s.baselineDraftRows
++      << ",\"planned_draft_rows\":" << s.plannedDraftRows
++      << ",\"costs\":{\"bulk_row_ms\":" << s.decisionCosts.bulkRowMs
++      << ",\"middle_row_ms\":" << s.decisionCosts.middleRowMs
++      << ",\"short_row_ms\":" << s.decisionCosts.shortRowMs
++      << ",\"draft_row_ms\":" << s.decisionCosts.draftRowMs
++      << ",\"command_ms\":" << s.decisionCosts.commandMs
++      << ",\"snapshot_ms\":" << s.decisionCosts.snapshotMs
++      << ",\"restore_ms\":" << s.decisionCosts.restoreMs
++      << ",\"queue_interference_ms\":" << s.decisionCosts.queueInterferenceMs << "}"
++      << ",\"selected\":[";
++  for (size_t i = 0; i < s.selected.size(); ++i) {
++    if (i) out << ',';
++    out << s.selected[i];
++  }
++  out << "],\"forecast\":[";
++  for (size_t i = 0; i < s.forecast.size(); ++i) {
++    if (i) out << ',';
++    out << "{\"overlap\":" << s.forecast[i].overlap
++        << ",\"suffix\":" << s.forecast[i].suffix
++        << ",\"expected_uses\":" << s.forecast[i].expectedUses << '}';
++  }
++  out << "]}}";
++}
+ 
+ // idle_release_seconds is null while the engine keeps them (--idle-release off).
+ void appendWeights(std::ostringstream &out, const WeightsSnapshot &weights) {
+@@ -221,7 +268,10 @@
+       << ",\"resource_suspensions\":" << core.resourceSuspensions
+       << ",\"priority_suspensions\":" << core.prioritySuspensions
+       << ",\"resource_resumptions\":" << core.resourceResumptions
+-      << ",\"resource_replay_tokens\":" << core.resourceReplayTokens << "}"
++      << ",\"resource_replay_tokens\":" << core.resourceReplayTokens
++      << ",\"semantic_planner\":";
++  appendSemanticPlanner(out, core.semanticPlanner);
++  out << "}"
+       << ",\"draft_context\":{\"target_prefill_rows\":"
+       << executorTelemetry.targetPrefillRows
+       << ",\"prompt_end_rows\":" << executorTelemetry.draftContextRowsActive

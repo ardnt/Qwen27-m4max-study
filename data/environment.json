@@ -22,7 +22,11 @@
     "kv_heads": 4,
     "head_dim": 256,
     "configured_context": 65536,
-    "model_native_context": 262144
+    "model_native_context": 262144,
+    "configuration_architecture": "Qwen3_5ForConditionalGeneration",
+    "configuration_model_type": "qwen3_5",
+    "public_target_revision": null,
+    "provenance_note": "Qwen3.8 is the installed product label; architecture is qwen3_5. Training lineage has not been independently verified."
   },
   "runtime": {
     "name": "Splash",
