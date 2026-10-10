@@ -1,5 +1,7 @@
 # Publication review — 10 October 2026
 
+> Historical evidence: see the [new randomized comparisons](controlled/README.md) and [prior-art correction](PRIOR_ART.md). The later comparison found cold-request regressions and two differing Python outputs; output identity here applies only to this document’s original corpus.
+
 The original 98-request study was recomputed unchanged. A distinct 96-request
 cost-aware planner study is now exported with its fixed synthetic corpus,
 individual rows, native decision receipts, historical source patch, portable

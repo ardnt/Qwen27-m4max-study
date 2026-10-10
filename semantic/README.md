@@ -1,5 +1,7 @@
 # Cost-aware semantic checkpoint planner — measured results
 
+> Historical evidence: see the [new randomized comparisons](../controlled/README.md) and [prior-art correction](../PRIOR_ART.md). The later comparison found cold-request regressions and two differing Python outputs; output identity here applies only to this document’s original corpus.
+
 “Semantic” refers to exact conversation structure. It adds no embedding model
 and never reuses state merely because two prompts have similar meanings.
 
@@ -58,7 +60,7 @@ Draft: `z-lab/Qwen3.8-27B-DFlash2`, revision
 3,848,817,896-byte BF16 source weights. Runtime projection handling unchanged;
 seven proposals plus anchor, full 2,048-token context, rank256/top-k16 selector,
 full target verification. Complete snapshot: 196,083,712 bytes (187 MiB).
-Semantic placement budget: two states and 512 MiB per request; native global
+Semantic placement budget: two states and 512 MiB per placement decision (not a lifetime cap); native global
 admission/eviction still applies.
 
 **Causal limits:** fixed off→on arm order; baseline and final host hashes differ

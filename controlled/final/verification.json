@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "measured_requests": 315,
+  "warmups": 21,
+  "paired_cases": 105,
+  "identical_worker_commands": true,
+  "only_policy_environment_differs": true,
+  "random_order_followed": true,
+  "all_request_bodies_matched": true,
+  "all_token_counts_matched": true,
+  "all_health_checks_passed": true,
+  "original_services_restored": true,
+  "production_files_unchanged": true,
+  "same_final_binary": "b2dfcfc0ed4683991c2b226c4782dcaaaa4f1322cceef5982f27805c3c78646e"
+}

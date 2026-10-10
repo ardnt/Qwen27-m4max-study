@@ -1,0 +1,282 @@
+{
+  "private": true,
+  "seed": 202610102006,
+  "binary": "LOCAL_BINARY/splash",
+  "binary_sha256": "b2dfcfc0ed4683991c2b226c4782dcaaaa4f1322cceef5982f27805c3c78646e",
+  "blocks": [
+    {
+      "block": 0,
+      "arm_order": [
+        "planner",
+        "heuristic",
+        "simple"
+      ],
+      "bundle_order": [
+        "branch_8k",
+        "unrelated",
+        "latest_1k",
+        "code",
+        "multi_turn"
+      ],
+      "case_ids": [
+        "b00-branch_8k-prime",
+        "b00-branch_8k-changed",
+        "b00-branch_8k-repeat",
+        "b00-unrelated-u0-cold",
+        "b00-unrelated-u1-cold",
+        "b00-latest_1k-prime",
+        "b00-latest_1k-changed",
+        "b00-latest_1k-repeat",
+        "b00-code-python",
+        "b00-multi_turn-c0-prime",
+        "b00-multi_turn-c0-changed",
+        "b00-multi_turn-c0-older",
+        "b00-multi_turn-c1-prime",
+        "b00-multi_turn-c1-changed",
+        "b00-multi_turn-c1-older"
+      ]
+    },
+    {
+      "block": 1,
+      "arm_order": [
+        "simple",
+        "planner",
+        "heuristic"
+      ],
+      "bundle_order": [
+        "unrelated",
+        "multi_turn",
+        "code",
+        "latest_1k",
+        "branch_8k"
+      ],
+      "case_ids": [
+        "b01-unrelated-u0-cold",
+        "b01-unrelated-u1-cold",
+        "b01-multi_turn-c0-prime",
+        "b01-multi_turn-c0-changed",
+        "b01-multi_turn-c0-older",
+        "b01-multi_turn-c1-prime",
+        "b01-multi_turn-c1-changed",
+        "b01-multi_turn-c1-older",
+        "b01-code-python",
+        "b01-latest_1k-prime",
+        "b01-latest_1k-changed",
+        "b01-latest_1k-repeat",
+        "b01-branch_8k-prime",
+        "b01-branch_8k-changed",
+        "b01-branch_8k-repeat"
+      ]
+    },
+    {
+      "block": 2,
+      "arm_order": [
+        "heuristic",
+        "simple",
+        "planner"
+      ],
+      "bundle_order": [
+        "multi_turn",
+        "latest_1k",
+        "branch_8k",
+        "unrelated",
+        "code"
+      ],
+      "case_ids": [
+        "b02-multi_turn-c0-prime",
+        "b02-multi_turn-c0-changed",
+        "b02-multi_turn-c0-older",
+        "b02-multi_turn-c1-prime",
+        "b02-multi_turn-c1-changed",
+        "b02-multi_turn-c1-older",
+        "b02-latest_1k-prime",
+        "b02-latest_1k-changed",
+        "b02-latest_1k-repeat",
+        "b02-branch_8k-prime",
+        "b02-branch_8k-changed",
+        "b02-branch_8k-repeat",
+        "b02-unrelated-u0-cold",
+        "b02-unrelated-u1-cold",
+        "b02-code-python"
+      ]
+    },
+    {
+      "block": 3,
+      "arm_order": [
+        "planner",
+        "simple",
+        "heuristic"
+      ],
+      "bundle_order": [
+        "code",
+        "latest_1k",
+        "multi_turn",
+        "unrelated",
+        "branch_8k"
+      ],
+      "case_ids": [
+        "b03-code-python",
+        "b03-latest_1k-prime",
+        "b03-latest_1k-changed",
+        "b03-latest_1k-repeat",
+        "b03-multi_turn-c0-prime",
+        "b03-multi_turn-c0-changed",
+        "b03-multi_turn-c0-older",
+        "b03-multi_turn-c1-prime",
+        "b03-multi_turn-c1-changed",
+        "b03-multi_turn-c1-older",
+        "b03-unrelated-u0-cold",
+        "b03-unrelated-u1-cold",
+        "b03-branch_8k-prime",
+        "b03-branch_8k-changed",
+        "b03-branch_8k-repeat"
+      ]
+    },
+    {
+      "block": 4,
+      "arm_order": [
+        "heuristic",
+        "planner",
+        "simple"
+      ],
+      "bundle_order": [
+        "multi_turn",
+        "unrelated",
+        "branch_8k",
+        "latest_1k",
+        "code"
+      ],
+      "case_ids": [
+        "b04-multi_turn-c0-prime",
+        "b04-multi_turn-c0-changed",
+        "b04-multi_turn-c0-older",
+        "b04-multi_turn-c1-prime",
+        "b04-multi_turn-c1-changed",
+        "b04-multi_turn-c1-older",
+        "b04-unrelated-u0-cold",
+        "b04-unrelated-u1-cold",
+        "b04-branch_8k-prime",
+        "b04-branch_8k-changed",
+        "b04-branch_8k-repeat",
+        "b04-latest_1k-prime",
+        "b04-latest_1k-changed",
+        "b04-latest_1k-repeat",
+        "b04-code-python"
+      ]
+    },
+    {
+      "block": 5,
+      "arm_order": [
+        "planner",
+        "simple",
+        "heuristic"
+      ],
+      "bundle_order": [
+        "code",
+        "branch_8k",
+        "multi_turn",
+        "unrelated",
+        "latest_1k"
+      ],
+      "case_ids": [
+        "b05-code-python",
+        "b05-branch_8k-prime",
+        "b05-branch_8k-changed",
+        "b05-branch_8k-repeat",
+        "b05-multi_turn-c0-prime",
+        "b05-multi_turn-c0-changed",
+        "b05-multi_turn-c0-older",
+        "b05-multi_turn-c1-prime",
+        "b05-multi_turn-c1-changed",
+        "b05-multi_turn-c1-older",
+        "b05-unrelated-u0-cold",
+        "b05-unrelated-u1-cold",
+        "b05-latest_1k-prime",
+        "b05-latest_1k-changed",
+        "b05-latest_1k-repeat"
+      ]
+    },
+    {
+      "block": 6,
+      "arm_order": [
+        "simple",
+        "heuristic",
+        "planner"
+      ],
+      "bundle_order": [
+        "latest_1k",
+        "unrelated",
+        "code",
+        "branch_8k",
+        "multi_turn"
+      ],
+      "case_ids": [
+        "b06-latest_1k-prime",
+        "b06-latest_1k-changed",
+        "b06-latest_1k-repeat",
+        "b06-unrelated-u0-cold",
+        "b06-unrelated-u1-cold",
+        "b06-code-python",
+        "b06-branch_8k-prime",
+        "b06-branch_8k-changed",
+        "b06-branch_8k-repeat",
+        "b06-multi_turn-c0-prime",
+        "b06-multi_turn-c0-changed",
+        "b06-multi_turn-c0-older",
+        "b06-multi_turn-c1-prime",
+        "b06-multi_turn-c1-changed",
+        "b06-multi_turn-c1-older"
+      ]
+    }
+  ],
+  "common_controls": {
+    "SPLASH_REGISTER_PREFILL": "128",
+    "SPLASH_WIDE_PREFILL": "1"
+  },
+  "arms": {
+    "simple": {
+      "SPLASH_SEMANTIC_PLANNER": "simple",
+      "SPLASH_BRANCH_MARKER_IDS": "248045,846,198"
+    },
+    "heuristic": {
+      "SPLASH_SEMANTIC_PLANNER": "off",
+      "SPLASH_BRANCH_MARKER_IDS": "248045,846,198"
+    },
+    "planner": {
+      "SPLASH_SEMANTIC_PLANNER": "on",
+      "SPLASH_BRANCH_MARKER_IDS": "248045,846,198"
+    }
+  },
+  "primary_endpoint": "Within-block paired total request E2E including prime/admission cost; planner vs simple.",
+  "secondary": [
+    "heuristic comparisons",
+    "per-stage TTFT",
+    "native target/draft rows",
+    "memory",
+    "acceptance",
+    "output equality",
+    "planner overhead"
+  ],
+  "count": {
+    "blocks": 7,
+    "arms": 3,
+    "measured_per_arm_per_block": 15,
+    "total_measured": 315,
+    "warmups": 21
+  },
+  "decision_rule": "Added complexity supported for this tested mix only if median paired total latency improves at least 10% versus simple, at least 6/7 blocks improve, all arithmetic passes, paired outputs match, no safety abort and peak <=30 GiB. Cold unrelated median paired regression must be <=3%. Also disclose all regressions and per-family results. No global superiority inferred.",
+  "scope": "Original heuristic vs conservative simple selector vs conservative cost-aware planner in one final binary. No stock-vendor comparison. All other knobs held constant.",
+  "cache_reset": "A new private worker for every arm/block resets RAM state and learner; no cache purge. Common 8-token warmup. No SSD cache.",
+  "memory": "25 GiB native hard budget, 28 GiB launcher, no disk persistence, native global governor unchanged. Planner internal additional cap two states/512 MiB.",
+  "statistics": "Seven paired blocks are units. Report paired bootstrap 95% CI (seeded 20000 resamples), exact two-sided sign test, medians/means/stdev and observed maximum p95 at n7. No p-value claim for within-block individual requests.",
+  "corpus_sha256": "5cc361b43c1b7258fbba3d0c10dfd7e27a38fbbac5c6abb34b99cf67868cf495",
+  "regression_cases": [
+    "b04-code-python",
+    "b06-code-python"
+  ],
+  "changes": "Conservative admission plus simple bounded comparator; same final binary. Other 103 cases use fresh seed values. No post-selection of samples.",
+  "no_tools": true,
+  "no_production_source_or_config_changes": true,
+  "created_utc": "2026-10-10T18:54:23Z",
+  "export_note": "Originally collected privately; authorized for publication after final validation."
+}

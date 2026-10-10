@@ -1,5 +1,7 @@
 # A checkpoint can save seconds—or create an expensive tail
 
+> Historical evidence: see the [new randomized comparisons](../controlled/README.md) and [prior-art correction](../PRIOR_ART.md). The later comparison found cold-request regressions and two differing Python outputs; output identity here applies only to this document’s original corpus.
+
 On a 36 GiB M4 Max, a changed question after a shared 1K prefix took 4.125 seconds
 to produce its first token. Preserving a useful composite checkpoint reduced
 that to 1.218 seconds in seven paired fixtures. The first request became slower:

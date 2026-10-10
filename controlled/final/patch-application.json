@@ -1,0 +1,8 @@
+{
+  "prior_chain": "See semantic/data/patch-application.json for the pinned base and patches 01\u201304. This check applies 04\u201305 to the previously measured 01\u201303 source capsule.",
+  "checked_final_patch": "05-conservative-admission.patch",
+  "all_runtime_files_equal_measured_source": true,
+  "files_compared": 241,
+  "binary_sha256": "b2dfcfc0ed4683991c2b226c4782dcaaaa4f1322cceef5982f27805c3c78646e",
+  "limitation": "Unchanged object archive and stock Metal library reused. Full clean rebuild not established."
+}

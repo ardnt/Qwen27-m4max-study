@@ -1,0 +1,12 @@
+[
+  {
+    "test": "controller-test",
+    "stdout": "{\"controller_tests\":\"passed\",\"bounded_history\":64,\"cold_miss_learning\":true,\"drift_adaptation\":true,\"cost_fit\":[2.1414,3.12174,1.43176,0.416252,0]}\n",
+    "exit_code": 0
+  },
+  {
+    "test": "planner-test",
+    "stdout": "{\"instances\":3000,\"brute_force_subsets\":75821,\"upstream_draft_plans\":\"matched\",\"edge_cases\":\"passed\",\"maximum_32_candidate_us_p50\":15.542,\"maximum_32_candidate_us_p95\":17.375}\n",
+    "exit_code": 0
+  }
+]

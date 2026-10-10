@@ -1,0 +1,332 @@
+[
+  {
+    "file": "vllm-pr-49574.json",
+    "url": "https://api.github.com/repos/vllm-project/vllm/pulls/49574",
+    "sha256": "2f426f56d11142849bc52320e93d4b2b188fa3f35468283d65fe4086b6ba1967",
+    "bytes": 25094,
+    "retrieved_utc": "2026-10-10T18:09:56Z"
+  },
+  {
+    "file": "vllm-pr-37898.json",
+    "url": "https://api.github.com/repos/vllm-project/vllm/pulls/37898",
+    "sha256": "9530347a2e01f94c2f06029e8e5de335e691989fe061c3020eaf4fbf838925da",
+    "bytes": 29904,
+    "retrieved_utc": "2026-10-10T18:09:57Z"
+  },
+  {
+    "file": "vllm-pr-50503.json",
+    "url": "https://api.github.com/repos/vllm-project/vllm/pulls/50503",
+    "sha256": "8741fd36d6bd5e1c72337c0248cf11cc2d9670f854212ab8961b02f9a7dd8965",
+    "bytes": 16093,
+    "retrieved_utc": "2026-10-10T18:09:59Z"
+  },
+  {
+    "file": "vllm-pr-50506.json",
+    "url": "https://api.github.com/repos/vllm-project/vllm/pulls/50506",
+    "sha256": "9f49e70a74a0297d831675baa8ad7429e7707007fe4de0fa5bc9da184c18cf55",
+    "bytes": 20148,
+    "retrieved_utc": "2026-10-10T18:10:00Z"
+  },
+  {
+    "file": "vllm-pr-50551.json",
+    "url": "https://api.github.com/repos/vllm-project/vllm/pulls/50551",
+    "sha256": "1451107769752bf7054903df74d1c3b1e42d74ee095565b5688e8e5546021234",
+    "bytes": 35651,
+    "retrieved_utc": "2026-10-10T18:10:00Z"
+  },
+  {
+    "file": "vllm-pr-52527.json",
+    "url": "https://api.github.com/repos/vllm-project/vllm/pulls/52527",
+    "sha256": "205a2a23f07dfe2de0e5be3c6d9b2e4013ce35efe335923a45438f28ae339f5f",
+    "bytes": 41034,
+    "retrieved_utc": "2026-10-10T18:10:01Z"
+  },
+  {
+    "file": "vllm-issue-50438.json",
+    "url": "https://api.github.com/repos/vllm-project/vllm/issues/50438",
+    "sha256": "2abc631b03368649616fcf465baae8d5bf6b0204bd82d8806da3817138fefbbd",
+    "bytes": 24298,
+    "retrieved_utc": "2026-10-10T18:10:02Z"
+  },
+  {
+    "file": "vllm-pr-49574-files.json",
+    "url": "https://api.github.com/repos/vllm-project/vllm/pulls/49574/files?per_page=100",
+    "sha256": "4a042fb5b981ca5b9a67d0b5ddc1bae0eeb511017d414ad89d1150ee58d699f1",
+    "bytes": 90583,
+    "retrieved_utc": "2026-10-10T18:10:03Z"
+  },
+  {
+    "file": "FlashML-org_FreeToken-meta.json",
+    "url": "https://api.github.com/repos/FlashML-org/FreeToken",
+    "sha256": "01c847678c704c618b53f906874654d21195705c5cd0d8b7ca626726b5c6e1db",
+    "bytes": 5631,
+    "retrieved_utc": "2026-10-10T18:10:03Z"
+  },
+  {
+    "file": "FlashML-org_FreeToken-head.json",
+    "url": "https://api.github.com/repos/FlashML-org/FreeToken/commits/main",
+    "sha256": "778842d3fb84c2c1c37ddea0f9d08c6898986af50b9c71948e1f7d779fd64b8b",
+    "bytes": 7582,
+    "retrieved_utc": "2026-10-10T18:10:04Z"
+  },
+  {
+    "file": "FlashML-org_FreeToken-tree.json",
+    "url": "https://api.github.com/repos/FlashML-org/FreeToken/git/trees/ee9789ff6cdcc2e9c5e9467aba630d38cd230fa6?recursive=1",
+    "sha256": "7bece02bcf048e7ce83966c9edf2b1331971154b6594feb1c3c4e190c0396f0f",
+    "bytes": 195166,
+    "retrieved_utc": "2026-10-10T18:10:05Z"
+  },
+  {
+    "file": "ruipeterpan_marconi-meta.json",
+    "url": "https://api.github.com/repos/ruipeterpan/marconi",
+    "sha256": "26fdee0949965c0b61bb2e0386d29196bccdeeb5c2f7a1c1d2a591f7ae63fa31",
+    "bytes": 5494,
+    "retrieved_utc": "2026-10-10T18:10:06Z"
+  },
+  {
+    "file": "ruipeterpan_marconi-head.json",
+    "url": "https://api.github.com/repos/ruipeterpan/marconi/commits/main",
+    "sha256": "21ac611a146abbc0b6bf44b925190336af0f138a249c13dedfeffe8a060b1023",
+    "bytes": 25542,
+    "retrieved_utc": "2026-10-10T18:10:07Z"
+  },
+  {
+    "file": "ruipeterpan_marconi-tree.json",
+    "url": "https://api.github.com/repos/ruipeterpan/marconi/git/trees/08016617b1524e6bf6ac29b680641cc945bda7f0?recursive=1",
+    "sha256": "65bebcdc65e9baa9129b8c874a687526a722f534684b1c2448ff16b21806d091",
+    "bytes": 7613,
+    "retrieved_utc": "2026-10-10T18:10:07Z"
+  },
+  {
+    "file": "sparse-prefix.html",
+    "url": "https://arxiv.org/html/2605.05219v1",
+    "sha256": "b7d424d3904265d13a23d0ed1e95bd60bbdcb967ed21168f45818f5f72f23739",
+    "bytes": 267939,
+    "retrieved_utc": "2026-10-10T18:10:08Z"
+  },
+  {
+    "file": "marconi.html",
+    "url": "https://arxiv.org/html/2411.19379v1",
+    "sha256": "86dc6cefb8f5312ca8930363792156f5aebc1b17a58646952be8353fde58892e",
+    "bytes": 180503,
+    "retrieved_utc": "2026-10-10T18:10:08Z"
+  },
+  {
+    "file": "freetoken.html",
+    "url": "https://arxiv.org/html/2608.16157v1",
+    "sha256": "56525f8ffaa489567567057675b7534963c665be57bb2d43a6a0489c68fb1b46",
+    "bytes": 168785,
+    "retrieved_utc": "2026-10-10T18:10:09Z"
+  },
+  {
+    "file": "suffixreplay.html",
+    "url": "https://arxiv.org/html/2609.33477v1",
+    "sha256": "da0d8353f9212fea8013116b916aeca93d1ce8afb87a0ba3a2d2d7d9cb2b7cf6",
+    "bytes": 289126,
+    "retrieved_utc": "2026-10-10T18:10:10Z"
+  },
+  {
+    "file": "seglen.html",
+    "url": "https://abdelfattah-lab.github.io/blogs/seglen/",
+    "sha256": "bd4dbaad66ab9e66370db9de04b0f2b80d36b84c4125c4a7a19a5e335bb3598a",
+    "bytes": 39056,
+    "retrieved_utc": "2026-10-10T18:10:10Z"
+  },
+  {
+    "file": "FlashML-org_FreeToken-python_freetoken_kvcache_hybrid_radix_cache.py",
+    "url": "https://raw.githubusercontent.com/FlashML-org/FreeToken/ee9789ff6cdcc2e9c5e9467aba630d38cd230fa6/python/freetoken/kvcache/hybrid_radix_cache.py",
+    "sha256": "4399367242b937a082330bc57d85b02f9447d599f05f12cffe8f9426a3f4d287",
+    "bytes": 13435,
+    "commit": "ee9789ff6cdcc2e9c5e9467aba630d38cd230fa6",
+    "retrieved_utc": "2026-10-10T18:11:13Z"
+  },
+  {
+    "file": "FlashML-org_FreeToken-python_freetoken_kvcache_linear_state_pool.py",
+    "url": "https://raw.githubusercontent.com/FlashML-org/FreeToken/ee9789ff6cdcc2e9c5e9467aba630d38cd230fa6/python/freetoken/kvcache/linear_state_pool.py",
+    "sha256": "cf9f350e28585756eb0b4e207025ed93de95e317e6079f6208754bdad70f88fe",
+    "bytes": 13198,
+    "commit": "ee9789ff6cdcc2e9c5e9467aba630d38cd230fa6",
+    "retrieved_utc": "2026-10-10T18:11:13Z"
+  },
+  {
+    "file": "FlashML-org_FreeToken-python_freetoken_scheduler_cache.py",
+    "url": "https://raw.githubusercontent.com/FlashML-org/FreeToken/ee9789ff6cdcc2e9c5e9467aba630d38cd230fa6/python/freetoken/scheduler/cache.py",
+    "sha256": "4205104cd06635c69ab35903a380cdeb2e64d6d284b41c0f12a988d3ef5e1725",
+    "bytes": 38562,
+    "commit": "ee9789ff6cdcc2e9c5e9467aba630d38cd230fa6",
+    "retrieved_utc": "2026-10-10T18:11:14Z"
+  },
+  {
+    "file": "ruipeterpan_marconi-radix_cache_hybrid.py",
+    "url": "https://raw.githubusercontent.com/ruipeterpan/marconi/08016617b1524e6bf6ac29b680641cc945bda7f0/radix_cache_hybrid.py",
+    "sha256": "1c642ef6deebfa4f4b15e61f0f818d65b7c26a976d4df1aae247041c01bbd3d0",
+    "bytes": 27435,
+    "commit": "08016617b1524e6bf6ac29b680641cc945bda7f0",
+    "retrieved_utc": "2026-10-10T18:11:15Z"
+  },
+  {
+    "file": "splash-runtime_engine_Engine.cpp",
+    "url": "https://raw.githubusercontent.com/incoai/splash/8a2b42069923d483151372b615f6182c72c2b6cd/runtime/engine/Engine.cpp",
+    "sha256": "015589aaf9f2ec624178aaf6272695bd53ef671b53cb3889095603df43c31d7a",
+    "bytes": 79099,
+    "commit": "8a2b42069923d483151372b615f6182c72c2b6cd",
+    "provenance": "Earlier same-day primary-source audit; fixed revision, not claimed latest."
+  },
+  {
+    "file": "omlx-omlx_cache_prefix_cache.py",
+    "url": "https://raw.githubusercontent.com/jundot/omlx/013bc3f3a48fa9a4b7dffbfeb6cdc7c1face1c5d/omlx/cache/prefix_cache.py",
+    "sha256": "61b0d125c147a1e37ef6e13add8d89f9f26125ddb965db0af2dd073f8f599b5a",
+    "bytes": 262307,
+    "commit": "013bc3f3a48fa9a4b7dffbfeb6cdc7c1face1c5d",
+    "provenance": "Earlier same-day primary-source audit; fixed revision, not claimed latest."
+  },
+  {
+    "file": "mlx-lm-mlx_lm_models_cache.py",
+    "url": "https://raw.githubusercontent.com/ml-explore/mlx-lm/ba8a08fd2ed72bbc53de84f89933f91fe4743e4a/mlx_lm/models/cache.py",
+    "sha256": "c96cb169fd5e0ec4584a162dd61dc62ab08ccdca03a9850f8a491ce6809145e6",
+    "bytes": 58349,
+    "commit": "ba8a08fd2ed72bbc53de84f89933f91fe4743e4a",
+    "provenance": "Earlier same-day primary-source audit; fixed revision, not claimed latest."
+  },
+  {
+    "file": "llama.cpp-tools_server_server-context.cpp",
+    "url": "https://raw.githubusercontent.com/ggml-org/llama.cpp/781dbc5ac98921dbdb5e5b2ec5b7a50960e937d4/tools/server/server-context.cpp",
+    "sha256": "b3677528950438e57d99beb1b994f5ffaaadeda4ffbb9e4a2dcdb63c50628ed3",
+    "bytes": 257441,
+    "commit": "781dbc5ac98921dbdb5e5b2ec5b7a50960e937d4",
+    "provenance": "Earlier same-day primary-source audit; fixed revision, not claimed latest."
+  },
+  {
+    "file": "vllm-vllm_v1_core_single_type_kv_cache_manager.py",
+    "url": "https://raw.githubusercontent.com/vllm-project/vllm/c41b2639e29c3bc01add1d34bef3032a6d9d8aca/vllm/v1/core/single_type_kv_cache_manager.py",
+    "sha256": "c54c322716949b2ffe1ccb7624928c759be19329ee03b4c11ffbc27084df08a9",
+    "bytes": 118986,
+    "commit": "c41b2639e29c3bc01add1d34bef3032a6d9d8aca",
+    "provenance": "Earlier same-day primary-source audit; fixed revision, not claimed latest."
+  },
+  {
+    "file": "TensorFold-zig_src_core_prompt_cache.zig",
+    "url": "https://raw.githubusercontent.com/ashhart/TensorFold/63bef1260f1172058fbca0aeab13366d9b67373c/zig/src/core/prompt_cache.zig",
+    "sha256": "5ff519c25269227f55e15ff807c745f63900b4cafcd082c825f951f37b5e7e86",
+    "bytes": 29135,
+    "commit": "63bef1260f1172058fbca0aeab13366d9b67373c",
+    "provenance": "Earlier same-day primary-source audit; fixed revision, not claimed latest."
+  },
+  {
+    "file": "llama-slot-03-slot-management.patch",
+    "url": "https://raw.githubusercontent.com/wguerlich/llama-server-slot-patches/3779565e96d5c39b02c89c67ff7f610e70538412/patches/upstream-3cf03257f/03-slot-management.patch",
+    "sha256": "af5f7c9f78e172bf43d3c435bb3d3db2f57e6cc8c1c0c3accb32560f468500c0",
+    "commit": "3779565e96d5c39b02c89c67ff7f610e70538412",
+    "bytes": 369396
+  },
+  {
+    "file": "llama-slot-RUNBOOK.md",
+    "url": "https://raw.githubusercontent.com/wguerlich/llama-server-slot-patches/3779565e96d5c39b02c89c67ff7f610e70538412/RUNBOOK.md",
+    "sha256": "4ab546b562fa02f6cf7f63363a4f014a098d15a9abfec3e02e1f9262e85b53be",
+    "commit": "3779565e96d5c39b02c89c67ff7f610e70538412",
+    "bytes": 15961
+  },
+  {
+    "file": "mere-Q35Generator+Prefill.swift",
+    "url": "https://raw.githubusercontent.com/sawfwair/mere-run/01feae347b640f1c9fa8bf8e7dfbf782497d2706/Sources/MereRunCore/Q35/Q35Generator+Prefill.swift",
+    "sha256": "d906ad5fbde97b83e0a758d43a304454eeaad5aa2ed41ab11be6ad7382f96c4d",
+    "commit": "01feae347b640f1c9fa8bf8e7dfbf782497d2706",
+    "bytes": 12722
+  },
+  {
+    "file": "mere-Q35Generator+Policy.swift",
+    "url": "https://raw.githubusercontent.com/sawfwair/mere-run/01feae347b640f1c9fa8bf8e7dfbf782497d2706/Sources/MereRunCore/Q35/Q35Generator+Policy.swift",
+    "sha256": "cb7cb58ad07ec0732dc4356aa1b5bf8dbb3612ebbd3fd377d8e00dde0763d031",
+    "commit": "01feae347b640f1c9fa8bf8e7dfbf782497d2706",
+    "bytes": 6073
+  },
+  {
+    "file": "mere-Gemma4Generator+PrefixCache.swift",
+    "url": "https://raw.githubusercontent.com/sawfwair/mere-run/01feae347b640f1c9fa8bf8e7dfbf782497d2706/Sources/MereRunCore/Gemma4/Gemma4Generator+PrefixCache.swift",
+    "sha256": "6eab9aac7192fd856e3e95104e8701bb80873b88e95dbb4604f3efc6f059fba6",
+    "commit": "01feae347b640f1c9fa8bf8e7dfbf782497d2706",
+    "bytes": 3621
+  },
+  {
+    "file": "seglen-pr-22172.json",
+    "url": "https://api.github.com/repos/sgl-project/sglang/pulls/22172",
+    "sha256": "363223465d6be1ea09744fcddaa515fc75a24d78ac35687892c892d3245b363c",
+    "bytes": 5405
+  },
+  {
+    "file": "sawfwair_mere-run-meta.json",
+    "url": "https://api.github.com/repos/sawfwair/mere-run",
+    "sha256": "15eb1a2eb67a012e4d524e4917dfa44d1bd407a48cac6e149f2402dea64605a5",
+    "bytes": 7183
+  },
+  {
+    "file": "sawfwair_mere-run-head.json",
+    "url": "https://api.github.com/repos/sawfwair/mere-run/commits/main",
+    "sha256": "2c3d97b267b772ef592d386f231056930443d8a71fd686528255205e42ec2852",
+    "bytes": 23502
+  },
+  {
+    "file": "sawfwair_mere-run-tree.json",
+    "url": "https://api.github.com/repos/sawfwair/mere-run/git/trees/01feae347b640f1c9fa8bf8e7dfbf782497d2706?recursive=1",
+    "sha256": "89b45497065af521918129a1d7b22fcef1883a42b6479e910fc87a33db9a3767",
+    "bytes": 1249744
+  },
+  {
+    "file": "wguerlich_llama-server-slot-patches-meta.json",
+    "url": "https://api.github.com/repos/wguerlich/llama-server-slot-patches",
+    "sha256": "83e7c55a45ecb5f31cd76d4b7d3f825d92cd90965352da7b3577663cb021cf45",
+    "bytes": 6938
+  },
+  {
+    "file": "wguerlich_llama-server-slot-patches-head.json",
+    "url": "https://api.github.com/repos/wguerlich/llama-server-slot-patches/commits/main",
+    "sha256": "43916bb25749ddcb6a95719923cccd24dd66d70d79071dd80f4e52863138e436",
+    "bytes": 19805
+  },
+  {
+    "file": "wguerlich_llama-server-slot-patches-tree.json",
+    "url": "https://api.github.com/repos/wguerlich/llama-server-slot-patches/git/trees/3779565e96d5c39b02c89c67ff7f610e70538412?recursive=1",
+    "sha256": "0dc4de2db42e6e95e5108097b2ad0fda2e03b33c786e26ef6ac2584dd4920446",
+    "bytes": 5037
+  },
+  {
+    "file": "glm-packed-checkpoints.md",
+    "url": "https://raw.githubusercontent.com/local-inference-lab/rtx6kpro/d24d7ce6b4eee06552d2d4b096a6418a4666c51e/models/glm-5.3-flash-community-r35.md",
+    "sha256": "6d0fe87f5bf4171668495db6da382e51ba9beca4666dc72b5668fda16d9176a2",
+    "commit": "d24d7ce6b4eee06552d2d4b096a6418a4666c51e",
+    "bytes": 34917
+  },
+  {
+    "file": "sglang-kimi-k3.html",
+    "url": "https://www.lmsys.org/blog/2026-07-27-kimi-k3-day0-support",
+    "sha256": "3b3dc3bfd565b7d1361ce87b4b10df4cc9ff25233b0440ef1f7b9b3ef4071912",
+    "bytes": 101651,
+    "retrieved_utc": "2026-10-10T18:20:17Z"
+  },
+  {
+    "file": "sawfwair_mere-run-prestudy-file-history.json",
+    "url": "https://api.github.com/repos/sawfwair/mere-run/commits?path=Sources%2FMereRunCore%2FQ35%2FQ35Generator%2BPrefill.swift&until=2026-10-09T23%3A59%3A59Z&per_page=1",
+    "sha256": "87178e686e2b3ac2bc6a3b194bbf1a08fe94ca021f3d356fac522822544fb6e3",
+    "bytes": 4490
+  },
+  {
+    "file": "sawfwair_mere-run-prestudy-file.txt",
+    "url": "https://raw.githubusercontent.com/sawfwair/mere-run/33b6b224e502db89a16d5716f96da821f18fdddf/Sources/MereRunCore/Q35/Q35Generator+Prefill.swift",
+    "sha256": "d906ad5fbde97b83e0a758d43a304454eeaad5aa2ed41ab11be6ad7382f96c4d",
+    "bytes": 12722,
+    "commit": "33b6b224e502db89a16d5716f96da821f18fdddf"
+  },
+  {
+    "file": "FlashML-org_FreeToken-prestudy-file-history.json",
+    "url": "https://api.github.com/repos/FlashML-org/FreeToken/commits?path=python%2Ffreetoken%2Fscheduler%2Fcache.py&until=2026-10-09T23%3A59%3A59Z&per_page=1",
+    "sha256": "09dae1a38431c4a959cdf269d6b4470c10a94c8c2a083ef3ddaaca439490f332",
+    "bytes": 11808
+  },
+  {
+    "file": "FlashML-org_FreeToken-prestudy-file.txt",
+    "url": "https://raw.githubusercontent.com/FlashML-org/FreeToken/127c85665b49e39d78a5d09b95a92169b5794eb0/python/freetoken/scheduler/cache.py",
+    "sha256": "4205104cd06635c69ab35903a380cdeb2e64d6d284b41c0f12a988d3ef5e1725",
+    "bytes": 38562,
+    "commit": "127c85665b49e39d78a5d09b95a92169b5794eb0"
+  }
+]

@@ -1,5 +1,7 @@
 # Architecture audit — 10 October 2026
 
+> Historical evidence: see the [new randomized comparisons](controlled/README.md) and [prior-art correction](PRIOR_ART.md). The later comparison found cold-request regressions and two differing Python outputs; output identity here applies only to this document’s original corpus.
+
 > Historical heuristic study. The implemented cost-aware extension and newer results are in [the planner article](semantic/ARTICLE.md). These are separate experiments.
 
 ## Assessment

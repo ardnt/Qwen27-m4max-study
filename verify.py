@@ -24,6 +24,7 @@ def main():
         run([sys.executable,'semantic/analyze.py','--check','--output-dir',str(out/'semantic')])
         run([sys.executable,'historical/full-benchmark/analyze.py'])
         run([sys.executable,'secondary/drift/analyze.py'])
+        run([sys.executable,'controlled/verify.py'])
         run([sys.executable,'-m','unittest','discover','-s','tests','-p','test_*.py','-v'])
         compiler = shlex.split(os.environ.get('CXX','c++'))
         for name, source in [('anchor','tests/branch_anchor_test.cpp'),
@@ -31,6 +32,11 @@ def main():
                              ('controller','semantic/tests/controller_test.cpp')]:
             binary = str(out/name)
             run(compiler+['-std=c++20','-O2','-Wall','-Wextra','-Werror','-I','semantic/include',source,'-o',binary])
+            run([binary])
+        for name in ('planner','controller'):
+            binary=str(out/('final-'+name))
+            run(compiler+['-std=c++20','-O2','-Wall','-Wextra','-Werror',
+                '-I','controlled/final/include',f'controlled/final/tests/{name}_test.cpp','-o',binary])
             run([binary])
     print('All offline evidence and CPU tests passed. No inference or service changes.')
 
