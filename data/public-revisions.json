@@ -1,0 +1,44 @@
+[
+  {
+    "repo": "ashhart/TensorFold",
+    "sha": "63bef1260f1172058fbca0aeab13366d9b67373c",
+    "date": "2026-10-10T10:31:44Z",
+    "title": "docs: the CUDA recipe links the GLM-on-CUDA tracker (#593)",
+    "url": "https://github.com/ashhart/TensorFold/commit/63bef1260f1172058fbca0aeab13366d9b67373c"
+  },
+  {
+    "repo": "ggml-org/llama.cpp",
+    "sha": "781dbc5ac98921dbdb5e5b2ec5b7a50960e937d4",
+    "date": "2026-10-10T09:22:38Z",
+    "title": "spec: properly handle mtmd input for mtp (#30257)",
+    "url": "https://github.com/ggml-org/llama.cpp/commit/781dbc5ac98921dbdb5e5b2ec5b7a50960e937d4"
+  },
+  {
+    "repo": "ml-explore/mlx-lm",
+    "sha": "ba8a08fd2ed72bbc53de84f89933f91fe4743e4a",
+    "date": "2026-10-10T00:21:02Z",
+    "title": "Support unconverted models (#1962)",
+    "url": "https://github.com/ml-explore/mlx-lm/commit/ba8a08fd2ed72bbc53de84f89933f91fe4743e4a"
+  },
+  {
+    "repo": "jundot/omlx",
+    "sha": "013bc3f3a48fa9a4b7dffbfeb6cdc7c1face1c5d",
+    "date": "2026-10-10T09:17:34Z",
+    "title": "fix(server): lease the decision model before encode in /v1/systemone (#4413)",
+    "url": "https://github.com/jundot/omlx/commit/013bc3f3a48fa9a4b7dffbfeb6cdc7c1face1c5d"
+  },
+  {
+    "repo": "incoai/splash",
+    "sha": "8a2b42069923d483151372b615f6182c72c2b6cd",
+    "date": "2026-10-10T06:34:41Z",
+    "title": "Merge pull request #356 from jianc99/nvfp4/formats",
+    "url": "https://github.com/incoai/splash/commit/8a2b42069923d483151372b615f6182c72c2b6cd"
+  },
+  {
+    "repo": "vllm-project/vllm",
+    "sha": "c41b2639e29c3bc01add1d34bef3032a6d9d8aca",
+    "date": "2026-10-10T09:08:36Z",
+    "title": "[Bugfix][Responses API] Complete cache-write token accounting (#60973)",
+    "url": "https://github.com/vllm-project/vllm/commit/c41b2639e29c3bc01add1d34bef3032a6d9d8aca"
+  }
+]

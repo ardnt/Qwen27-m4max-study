@@ -1,0 +1,273 @@
+diff --git a/runtime/engine/NativeArguments.cpp b/runtime/engine/NativeArguments.cpp
+index 7e0ca8b..f8f0e0b 100644
+--- a/runtime/engine/NativeArguments.cpp
++++ b/runtime/engine/NativeArguments.cpp
+@@ -3,6 +3,8 @@
+ #include <charconv>
+ #include <cmath>
+ #include <limits>
++#include <locale>
++#include <sstream>
+ #include <string>
+ #include <string_view>
+ #include <system_error>
+@@ -49,9 +51,13 @@ uint32_t parseMaxImagePatches(std::string_view value) {
+ }
+ 
+ bool parseFinite(std::string_view value, double &result) {
+-  const char *end = value.data() + value.size();
+-  auto parsed = std::from_chars(value.data(), end, result);
+-  return parsed.ec == std::errc{} && parsed.ptr == end && std::isfinite(result);
++  // The Mac's CLT libc++ lacks floating-point from_chars. Keep the original
++  // whole-input decimal syntax and locale independence on these headers.
++  if (value.empty() || value.front() == '+') return false;
++  std::istringstream stream{std::string(value)};
++  stream.imbue(std::locale::classic());
++  stream >> std::noskipws >> result;
++  return !stream.fail() && stream.eof() && std::isfinite(result);
+ }
+ 
+ double parseIdleRelease(std::string_view value) {
+diff --git a/runtime/model/DFlashDraft.cpp b/runtime/model/DFlashDraft.cpp
+index da0d02e..71b6e39 100644
+--- a/runtime/model/DFlashDraft.cpp
++++ b/runtime/model/DFlashDraft.cpp
+@@ -110,7 +110,7 @@ void DFlashDraft::addSelection(
+ 
+ void DFlashDraft::addContextPrefill(
+     metal::CommandGraph &graph, DFlashPrefillBuffers buffers, uint32_t rows,
+-    std::span<const DFlashPrefillSpan> spans) const {
++    std::span<const DFlashPrefillSpan> spans, ops::LinearScratch scratch) const {
+   if (!rows || rows > ExecutionLimits::prefillTokenBudget || spans.empty())
+     throw std::invalid_argument("invalid draft context prefill");
+   const DFlashDraftLayout &layout = weights_.layout;
+@@ -121,7 +121,7 @@ void DFlashDraft::addContextPrefill(
+   operators_.linear().addPrefillSums(graph, buffers.capturedTargetHidden, buffers.projectionSums,
+                                      weights_.contextProjection, rows);
+   operators_.linear().addPrefill(graph, buffers.capturedTargetHidden, weights_.contextProjection,
+-                                 buffers.projected, buffers.projectionSums, rows);
++                                 buffers.projected, buffers.projectionSums, rows, scratch);
+   ops::Normalization::addRmsWithQ4Sums(
+       graph, buffers.projected, weights_.hiddenNorm, buffers.hidden,
+       buffers.projectionSums, layout.hiddenSize, rows);
+@@ -129,7 +129,7 @@ void DFlashDraft::addContextPrefill(
+   for (uint32_t layer = 0; layer < layout.layers; ++layer) {
+     operators_.linear().addPrefill(graph, buffers.hidden,
+                       contextKvProjections_[layer],
+-                      buffers.contextKv, buffers.projectionSums, rows);
++                      buffers.contextKv, buffers.projectionSums, rows, scratch);
+     for (const DFlashPrefillSpan &span : spans) {
+       const uint64_t kvOffset =
+           uint64_t{span.compactRow} * layout.contextKvSize() * sizeof(uint16_t);
+diff --git a/runtime/model/DFlashDraft.hpp b/runtime/model/DFlashDraft.hpp
+index 5f30ed1..e2e2859 100644
+--- a/runtime/model/DFlashDraft.hpp
++++ b/runtime/model/DFlashDraft.hpp
+@@ -200,7 +200,8 @@ public:
+ 
+   void addContextPrefill(metal::CommandGraph &graph,
+                          DFlashPrefillBuffers buffers, uint32_t rows,
+-                         std::span<const DFlashPrefillSpan> spans) const;
++                         std::span<const DFlashPrefillSpan> spans,
++                         ops::LinearScratch scratch = {}) const;
+ 
+   void addDecode(metal::CommandGraph &graph, DFlashDecodeBuffers buffers,
+                  const ops::Projection &vocabularyProjection,
+diff --git a/runtime/model/Model.hpp b/runtime/model/Model.hpp
+index 2e0bc57..1d99b7c 100644
+--- a/runtime/model/Model.hpp
++++ b/runtime/model/Model.hpp
+@@ -100,28 +100,6 @@ struct SamplingParameters final {
+   }
+ };
+ 
+-// Immutable view of the fields a model needs to activate a sequence.  Engine
+-// priority and deadline policy deliberately do not cross this boundary.
+-struct ModelRequest final {
+-  uint64_t id = 0;
+-  std::span<const uint32_t> prompt;
+-  std::span<const struct ImageSpan> images;
+-  std::span<const uint8_t> imagePixels;
+-  uint32_t maxNewTokens = 0;
+-  SamplingParameters sampling;
+-  ConstraintMode constraint = ConstraintMode::None;
+-  // Nonempty selects score-only mode: prefill runs to completion, no token is
+-  // generated, and the raw final-position logits at these ids are returned in
+-  // ModelStepResult::scoreLogits. maxNewTokens must be zero.
+-  std::span<const uint32_t> scoreTokens{};
+-  // RequestFlag bits.
+-  uint32_t flags = 0;
+-  // Prompt tokens the lane takes from a cached state. Images that end at or
+-  // before it are neither staged nor encoded; their spans still place
+-  // rotary positions.
+-  uint32_t restoredTokens = 0;
+-};
+-
+ // One image in the prompt: the run of placeholder tokens it occupies (one per
+ // merged 2x2 patch group, row-major over the merged grid), the patch grid of
+ // the frontend's resized pixels, and a 128-bit digest of that content.
+@@ -145,6 +123,28 @@ struct ImageSpan final {
+   bool operator==(const ImageSpan &) const = default;
+ };
+ 
++// Immutable view of the fields a model needs to activate a sequence.  Engine
++// priority and deadline policy deliberately do not cross this boundary.
++struct ModelRequest final {
++  uint64_t id = 0;
++  std::span<const uint32_t> prompt;
++  std::span<const struct ImageSpan> images;
++  std::span<const uint8_t> imagePixels;
++  uint32_t maxNewTokens = 0;
++  SamplingParameters sampling;
++  ConstraintMode constraint = ConstraintMode::None;
++  // Nonempty selects score-only mode: prefill runs to completion, no token is
++  // generated, and the raw final-position logits at these ids are returned in
++  // ModelStepResult::scoreLogits. maxNewTokens must be zero.
++  std::span<const uint32_t> scoreTokens{};
++  // RequestFlag bits.
++  uint32_t flags = 0;
++  // Prompt tokens the lane takes from a cached state. Images that end at or
++  // before it are neither staged nor encoded; their spans still place
++  // rotary positions.
++  uint32_t restoredTokens = 0;
++};
++
+ // The first rule a request's image spans break, or none: each covers a valid
+ // grid within the patch limit with one token per merged patch group, the
+ // runs are sorted, disjoint and inside the prompt, and the pixels are the
+diff --git a/runtime/model/Runtime.cpp b/runtime/model/Runtime.cpp
+index d36db1e..0079324 100644
+--- a/runtime/model/Runtime.cpp
++++ b/runtime/model/Runtime.cpp
+@@ -149,7 +149,9 @@ StateAdmission admitIdleLane(const QwenStateStorage &states,
+ QwenTargetPrefillBuffers prefillBuffers(const PrefillArena &arena) {
+   QwenTargetPrefillBuffers buffers;
+   // Prefill plans read plain bf16 rows, so there is no input table or sums.
+-  buffers.linearScratch = {.partials = arena.get(PrefillTensor::LinearPartials),
++  buffers.linearScratch = {.input = arena.get(PrefillTensor::LinearInput),
++                           .sums = arena.get(PrefillTensor::LinearSums),
++                           .partials = arena.get(PrefillTensor::LinearPartials),
+                            .counters = arena.get(PrefillTensor::LinearCounters),
+                            .rotated = arena.get(PrefillTensor::LinearRotated)};
+   buffers.hidden = {arena.get(PrefillTensor::Hidden0), arena.get(PrefillTensor::Hidden1)};
+@@ -1175,7 +1177,8 @@ struct Runtime::Impl {
+          p(PrefillTensor::ContextProjected), p(PrefillTensor::ContextHidden),
+          p(PrefillTensor::ContextKv), p(PrefillTensor::DraftRopeCos),
+          p(PrefillTensor::DraftRopeSin)},
+-        batch.capturedRows, std::span(spans).first(spanCount));
++        batch.capturedRows, std::span(spans).first(spanCount),
++        prefillBuffers(*prefillArena).linearScratch);
+   }
+ 
+   // Returns each lane's draft captures, indexed like `entries`.
+diff --git a/runtime/model/RuntimeArenas.cpp b/runtime/model/RuntimeArenas.cpp
+index 3b4e527..cf84290 100644
+--- a/runtime/model/RuntimeArenas.cpp
++++ b/runtime/model/RuntimeArenas.cpp
+@@ -119,6 +119,8 @@ prefillTensorBytes(const RuntimeGeometry &geometry,
+   // prefill plan.
+   for (const auto &projection : geometry.target.prefillProjections) {
+     const ops::LinearScratchSize linear = operators.linear().prefillScratchSize(projection);
++    put(PrefillTensor::LinearInput, linear.input);
++    put(PrefillTensor::LinearSums, linear.sums);
+     put(PrefillTensor::LinearPartials, linear.partials);
+     put(PrefillTensor::LinearCounters, linear.counters);
+     put(PrefillTensor::LinearRotated, linear.rotated);
+diff --git a/runtime/model/RuntimeArenas.hpp b/runtime/model/RuntimeArenas.hpp
+index 2080d22..3082715 100644
+--- a/runtime/model/RuntimeArenas.hpp
++++ b/runtime/model/RuntimeArenas.hpp
+@@ -118,6 +118,8 @@ enum class PrefillTensor : uint32_t {
+   // One tensor per ops::kMoeScratchFields entry, in its order (moeScratchTensor).
+   MoeScratch,
+   MoeScratchLast = MoeScratch + ops::kMoeScratchFields.size() - 1,
++  LinearInput,
++  LinearSums,
+   LinearPartials,
+   LinearCounters,
+   // The rotated input of a rotated projection (ops::LinearScratch::rotated).
+diff --git a/runtime/ops/Linear.cpp b/runtime/ops/Linear.cpp
+index f38429a..9170ab5 100644
+--- a/runtime/ops/Linear.cpp
++++ b/runtime/ops/Linear.cpp
+@@ -7,6 +7,7 @@
+ 
+ #include <algorithm>
+ #include <array>
++#include <cstdlib>
+ #include <optional>
+ #include <stdexcept>
+ #include <string>
+@@ -18,6 +19,13 @@ namespace {
+ 
+ constexpr uint32_t kAffinePrefillTileRows = 32;
+ constexpr uint32_t kQuantGroup = 64;
++bool shortPrefillEnabled() {
++  static const bool enabled = [] {
++    const char *value = std::getenv("SPLASH_SHORT_PREFILL");
++    return value && std::string_view(value) == "1";
++  }();
++  return enabled;
++}
+ static_assert(SPLASH_TARGET_VERIFY_ROWS == 8,
+               "Q4 register tiles require eight verify rows per lane");
+ // The kernels sum their input per block of four quant groups (256 inputs);
+@@ -597,6 +605,14 @@ LinearPlan Linear::decodePlan(const Projection &p, uint32_t lanes, LinearEpilogu
+   return plan(decode({p.outputSize, p.inputSize}, lanes, epilogue), p, gate);
+ }
+ LinearPlan Linear::prefillPlan(const Projection &p, uint32_t rows, LinearEpilogue epilogue) const {
++  // Cached chat tails are too small to occupy a 32-row prefill matrix tile.
++  // Run the existing eight-row register kernels on padded independent rows.
++  // Attention, GDN, position handling and sequence lengths still use the
++  // actual rows. Large prompts retain the original GPU/ANE prefill path.
++  if (shortPrefillEnabled() && family_ == GpuFamilyClass::Apple9 && rows && rows <= 32 &&
++      p.layout() == WeightLayout::Affine64 && p.inputSize % 256 == 0 &&
++      epilogue != LinearEpilogue::UpWithGate)
++    return decodePlan(p, (rows + SPLASH_TARGET_VERIFY_ROWS - 1) / SPLASH_TARGET_VERIFY_ROWS, epilogue);
+   return plan({{p.outputSize, p.inputSize}, rows, LinearPhase::Prefill, epilogue}, p);
+ }
+ 
+@@ -615,6 +631,9 @@ LinearScratchSize Linear::decodeScratchSize(ProjectionShape shape) const {
+ 
+ LinearScratchSize Linear::prefillScratchSize(ProjectionShape shape) const {
+   LinearScratchSize bound;
++  if (shortPrefillEnabled() && family_ == GpuFamilyClass::Apple9 &&
++      shape.layout == WeightLayout::Affine64 && shape.inputSize % 256 == 0)
++    bound.include(decodeScratchSize(shape));
+   // Prefill plans take split scratch only in chunks of up to a decode batch,
+   // which a GGUF projection runs on the staged tile (LinearGguf.cpp).
+   for (uint32_t rows = 1; rows <= kMaximumDecodeTileRows; ++rows)
+@@ -754,8 +773,13 @@ void Linear::addPrefillSums(metal::CommandGraph &graph, metal::MetalBuffer input
+ void Linear::addPrefill(metal::CommandGraph &graph, metal::MetalBuffer input, const Projection &p,
+                         metal::MetalBuffer output, metal::MetalBuffer sums, uint32_t rows,
+                         LinearScratch scratch) const {
++  auto selected = prefillPlan(p, rows, LinearEpilogue::None);
++  const auto required = selected.scratchSize();
++  if (scratch.input.sizeBytes() < required.input || scratch.sums.sizeBytes() < required.sums ||
++      scratch.partials.sizeBytes() < required.partials || scratch.counters.sizeBytes() < required.counters)
++    selected = plan({{p.outputSize, p.inputSize}, rows, LinearPhase::Prefill, LinearEpilogue::None}, p);
+   add(graph, {.input = input, .output = output, .sums = sums, .scratch = scratch}, p,
+-      prefillPlan(p, rows, LinearEpilogue::None));
++      selected);
+ }
+ void Linear::addPrefillResidual(metal::CommandGraph &graph, metal::MetalBuffer input, const Projection &p,
+                                 metal::MetalBuffer residual, metal::MetalBuffer output, metal::MetalBuffer sums,
+@@ -766,6 +790,18 @@ void Linear::addPrefillResidual(metal::CommandGraph &graph, metal::MetalBuffer i
+ void Linear::addPrefillSwiGlu(metal::CommandGraph &graph, const SwiGluProjections &ffn,
+                               const PrefillFfnBuffers &b, metal::MetalBuffer residual, metal::MetalBuffer output,
+                               uint32_t rows) const {
++  const char *fused = std::getenv("SPLASH_SHORT_PREFILL_FUSED");
++  if (fused && std::string_view(fused) == "1" &&
++      shortPrefillEnabled() && family_ == GpuFamilyClass::Apple9 && rows && rows <= 32 &&
++      ffn.gate->layout() == WeightLayout::Affine64 && ffn.up->layout() == WeightLayout::Affine64 &&
++      ffn.down->layout() == WeightLayout::Affine64) {
++    const uint32_t lanes = (rows + SPLASH_TARGET_VERIFY_ROWS - 1) / SPLASH_TARGET_VERIFY_ROWS;
++    add(graph, {.input = b.normalized, .output = b.intermediate,
++                 .gateScratch = b.gateScratch, .scratch = b.scratch}, *ffn.up,
++        decodePlan(*ffn.up, lanes, LinearEpilogue::GateUp, ffn.gate), ffn.gate);
++    addPrefillResidual(graph, b.intermediate, *ffn.down, residual, output, b.downSums, rows, b.scratch);
++    return;
++  }
+   addPrefill(graph, b.normalized, *ffn.gate, b.gateScratch, b.sums, rows, b.scratch);
+   addPrefillUpWithGate(graph, b.normalized, *ffn.up, b.gateScratch, b.intermediate, b.sums, b.downSums, rows,
+                        b.scratch);

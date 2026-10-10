@@ -1,0 +1,21 @@
+This package contains local source adaptations and synthetic benchmark evidence.
+
+Splash engine interfaces, surrounding patch context, and original kernel plans:
+Splash / IncoAI contributors, https://github.com/incoai/splash
+Apache License 2.0; see LICENSE and upstream notices.
+
+The secondary indexed draft-head adaptation uses TensorFold's existing fragment
+matmul generator and arithmetic:
+TensorFold contributors, https://github.com/ashhart/TensorFold
+Apache License 2.0; retain applicable upstream notices when integrating.
+
+DFlash2 trained draft models and inference method:
+Z Lab contributors, https://github.com/z-lab/dflash
+No model weights or DFlash source implementation are redistributed here.
+
+Related checkpoint techniques are credited in the article and architecture audit,
+including Marconi, llama.cpp, oMLX, and vLLM. No claim to ownership of those
+upstream systems, algorithms, trained weights or compiled kernels is made.
+
+Local engineering adaptations and synthetic evidence: project contributors, 2026.
+This package redistributes no upstream executable, compiled shader or model weight.

@@ -1,0 +1,263 @@
+[
+  {
+    "project": "splash",
+    "repo": "incoai/splash",
+    "sha": "8a2b42069923d483151372b615f6182c72c2b6cd",
+    "path": "runtime/engine/Engine.cpp",
+    "url": "https://raw.githubusercontent.com/incoai/splash/8a2b42069923d483151372b615f6182c72c2b6cd/runtime/engine/Engine.cpp",
+    "bytes": 79099,
+    "sha256": "015589aaf9f2ec624178aaf6272695bd53ef671b53cb3889095603df43c31d7a"
+  },
+  {
+    "project": "splash",
+    "repo": "incoai/splash",
+    "sha": "8a2b42069923d483151372b615f6182c72c2b6cd",
+    "path": "runtime/ops/Linear.cpp",
+    "url": "https://raw.githubusercontent.com/incoai/splash/8a2b42069923d483151372b615f6182c72c2b6cd/runtime/ops/Linear.cpp",
+    "bytes": 13428,
+    "sha256": "d4d8e7d720596dd9fb0ac0fca2636977ef93b142829eb948fef3cf6272a4bf11"
+  },
+  {
+    "project": "splash",
+    "repo": "incoai/splash",
+    "sha": "8a2b42069923d483151372b615f6182c72c2b6cd",
+    "path": "runtime/ops/Linear.hpp",
+    "url": "https://raw.githubusercontent.com/incoai/splash/8a2b42069923d483151372b615f6182c72c2b6cd/runtime/ops/Linear.hpp",
+    "bytes": 16249,
+    "sha256": "51a3d2a5d55c7575df86a62fcd845d56b188c26803a8221b990b4451259731f2"
+  },
+  {
+    "project": "splash",
+    "repo": "incoai/splash",
+    "sha": "8a2b42069923d483151372b615f6182c72c2b6cd",
+    "path": "runtime/engine/RuntimeResources.mm",
+    "url": "https://raw.githubusercontent.com/incoai/splash/8a2b42069923d483151372b615f6182c72c2b6cd/runtime/engine/RuntimeResources.mm",
+    "bytes": 34822,
+    "sha256": "6808d108a564f489b97595a24dac54c5f21f3c7aba4c821eef39930805e1dc3e"
+  },
+  {
+    "project": "splash",
+    "repo": "incoai/splash",
+    "sha": "8a2b42069923d483151372b615f6182c72c2b6cd",
+    "path": "CONTRIBUTING.md",
+    "url": "https://raw.githubusercontent.com/incoai/splash/8a2b42069923d483151372b615f6182c72c2b6cd/CONTRIBUTING.md",
+    "bytes": 788,
+    "sha256": "57f0e2ec406fd1cc9b1543c5b1354c1628fd106519bfd80b5cc68ac76dac2ef1"
+  },
+  {
+    "project": "splash",
+    "repo": "incoai/splash",
+    "sha": "8a2b42069923d483151372b615f6182c72c2b6cd",
+    "path": "README.md",
+    "url": "https://raw.githubusercontent.com/incoai/splash/8a2b42069923d483151372b615f6182c72c2b6cd/README.md",
+    "bytes": 7298,
+    "sha256": "2b026dcf2239d4a5651c47f8b308426faf24cd781aabe777cd293cc30288b4f2"
+  },
+  {
+    "project": "TensorFold",
+    "repo": "ashhart/TensorFold",
+    "sha": "63bef1260f1172058fbca0aeab13366d9b67373c",
+    "path": "README.md",
+    "url": "https://raw.githubusercontent.com/ashhart/TensorFold/63bef1260f1172058fbca0aeab13366d9b67373c/README.md",
+    "bytes": 19241,
+    "sha256": "690d7223b68aae7de04b8275af02f7dbf8633a8eb0da76550d8545092bcdff50"
+  },
+  {
+    "project": "TensorFold",
+    "repo": "ashhart/TensorFold",
+    "sha": "63bef1260f1172058fbca0aeab13366d9b67373c",
+    "path": "docs/recipes/qwen3.8-27b.md",
+    "url": "https://raw.githubusercontent.com/ashhart/TensorFold/63bef1260f1172058fbca0aeab13366d9b67373c/docs/recipes/qwen3.8-27b.md",
+    "bytes": 15532,
+    "sha256": "6b453fe1cd634db80f43d5a1520177abee05e70a0afa08f9d283442a1e830890"
+  },
+  {
+    "project": "omlx",
+    "repo": "jundot/omlx",
+    "sha": "013bc3f3a48fa9a4b7dffbfeb6cdc7c1face1c5d",
+    "path": "README.md",
+    "url": "https://raw.githubusercontent.com/jundot/omlx/013bc3f3a48fa9a4b7dffbfeb6cdc7c1face1c5d/README.md",
+    "bytes": 23536,
+    "sha256": "d14d21dc3ada19ef13115bbb3b60b8ddc0d1101e212880bd65ae109c10590b75"
+  },
+  {
+    "project": "omlx",
+    "repo": "jundot/omlx",
+    "sha": "013bc3f3a48fa9a4b7dffbfeb6cdc7c1face1c5d",
+    "path": "docs/experimental/qwen35_ane_prefill.md",
+    "url": "https://raw.githubusercontent.com/jundot/omlx/013bc3f3a48fa9a4b7dffbfeb6cdc7c1face1c5d/docs/experimental/qwen35_ane_prefill.md",
+    "bytes": 21944,
+    "sha256": "e9fb403285ab70207c8de3134da62747f0a314b614ab1245528b62d265083633"
+  },
+  {
+    "project": "omlx",
+    "repo": "jundot/omlx",
+    "sha": "013bc3f3a48fa9a4b7dffbfeb6cdc7c1face1c5d",
+    "path": "omlx/cache/prefix_cache.py",
+    "url": "https://raw.githubusercontent.com/jundot/omlx/013bc3f3a48fa9a4b7dffbfeb6cdc7c1face1c5d/omlx/cache/prefix_cache.py",
+    "bytes": 262307,
+    "sha256": "61b0d125c147a1e37ef6e13add8d89f9f26125ddb965db0af2dd073f8f599b5a"
+  },
+  {
+    "project": "omlx",
+    "repo": "jundot/omlx",
+    "sha": "013bc3f3a48fa9a4b7dffbfeb6cdc7c1face1c5d",
+    "path": "omlx/cache/paged_cache.py",
+    "url": "https://raw.githubusercontent.com/jundot/omlx/013bc3f3a48fa9a4b7dffbfeb6cdc7c1face1c5d/omlx/cache/paged_cache.py",
+    "bytes": 66130,
+    "sha256": "c0d36d06f9de3661c008a9a1ce87e576cf2be26dd24ca0e3c1e41d0a49f1ee54"
+  },
+  {
+    "project": "mlx-lm",
+    "repo": "ml-explore/mlx-lm",
+    "sha": "ba8a08fd2ed72bbc53de84f89933f91fe4743e4a",
+    "path": "mlx_lm/models/cache.py",
+    "url": "https://raw.githubusercontent.com/ml-explore/mlx-lm/ba8a08fd2ed72bbc53de84f89933f91fe4743e4a/mlx_lm/models/cache.py",
+    "bytes": 58349,
+    "sha256": "c96cb169fd5e0ec4584a162dd61dc62ab08ccdca03a9850f8a491ce6809145e6"
+  },
+  {
+    "project": "mlx-lm",
+    "repo": "ml-explore/mlx-lm",
+    "sha": "ba8a08fd2ed72bbc53de84f89933f91fe4743e4a",
+    "path": "mlx_lm/generate.py",
+    "url": "https://raw.githubusercontent.com/ml-explore/mlx-lm/ba8a08fd2ed72bbc53de84f89933f91fe4743e4a/mlx_lm/generate.py",
+    "bytes": 76672,
+    "sha256": "4a3bf57f5679dac73791f069268866ab5b9336e58582d436b31133984e4b6971"
+  },
+  {
+    "project": "llama.cpp",
+    "repo": "ggml-org/llama.cpp",
+    "sha": "781dbc5ac98921dbdb5e5b2ec5b7a50960e937d4",
+    "path": "tools/server/server-context.cpp",
+    "url": "https://raw.githubusercontent.com/ggml-org/llama.cpp/781dbc5ac98921dbdb5e5b2ec5b7a50960e937d4/tools/server/server-context.cpp",
+    "bytes": 257441,
+    "sha256": "b3677528950438e57d99beb1b994f5ffaaadeda4ffbb9e4a2dcdb63c50628ed3"
+  },
+  {
+    "project": "vllm",
+    "repo": "vllm-project/vllm",
+    "sha": "c41b2639e29c3bc01add1d34bef3032a6d9d8aca",
+    "path": "docs/design/hybrid_kv_cache_manager.md",
+    "url": "https://raw.githubusercontent.com/vllm-project/vllm/c41b2639e29c3bc01add1d34bef3032a6d9d8aca/docs/design/hybrid_kv_cache_manager.md",
+    "bytes": 15575,
+    "sha256": "5a3138f8d3fddc44d69f7782510c0c97b394ee073bb743cae34bfbf281985b4a"
+  },
+  {
+    "project": "vllm",
+    "repo": "vllm-project/vllm",
+    "sha": "c41b2639e29c3bc01add1d34bef3032a6d9d8aca",
+    "path": "vllm/v1/core/single_type_kv_cache_manager.py",
+    "url": "https://raw.githubusercontent.com/vllm-project/vllm/c41b2639e29c3bc01add1d34bef3032a6d9d8aca/vllm/v1/core/single_type_kv_cache_manager.py",
+    "bytes": 118986,
+    "sha256": "c54c322716949b2ffe1ccb7624928c759be19329ee03b4c11ffbc27084df08a9"
+  },
+  {
+    "project": "splash",
+    "repo": "incoai/splash",
+    "sha": "8a2b42069923d483151372b615f6182c72c2b6cd",
+    "path": "runtime/engine/Engine.hpp",
+    "url": "https://raw.githubusercontent.com/incoai/splash/8a2b42069923d483151372b615f6182c72c2b6cd/runtime/engine/Engine.hpp",
+    "bytes": 29323,
+    "sha256": "a7ad9813e53f0e5df3b31d064dc573a322fadf344414817694efdfd502a20a48"
+  },
+  {
+    "project": "splash",
+    "repo": "incoai/splash",
+    "sha": "8a2b42069923d483151372b615f6182c72c2b6cd",
+    "path": "DEVELOPMENT.md",
+    "url": "https://raw.githubusercontent.com/incoai/splash/8a2b42069923d483151372b615f6182c72c2b6cd/DEVELOPMENT.md",
+    "bytes": 152767,
+    "sha256": "f7623fb79f4cf9aeab2dd964db3a5737d73668fac1ccdc3f80dda7170327ffbf"
+  },
+  {
+    "project": "splash",
+    "repo": "incoai/splash",
+    "sha": "8a2b42069923d483151372b615f6182c72c2b6cd",
+    "path": "LICENSE",
+    "url": "https://raw.githubusercontent.com/incoai/splash/8a2b42069923d483151372b615f6182c72c2b6cd/LICENSE",
+    "bytes": 11358,
+    "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+  },
+  {
+    "project": "TensorFold",
+    "repo": "ashhart/TensorFold",
+    "sha": "63bef1260f1172058fbca0aeab13366d9b67373c",
+    "path": "zig/src/core/prompt_cache.zig",
+    "url": "https://raw.githubusercontent.com/ashhart/TensorFold/63bef1260f1172058fbca0aeab13366d9b67373c/zig/src/core/prompt_cache.zig",
+    "bytes": 29135,
+    "sha256": "5ff519c25269227f55e15ff807c745f63900b4cafcd082c825f951f37b5e7e86"
+  },
+  {
+    "project": "TensorFold",
+    "repo": "ashhart/TensorFold",
+    "sha": "63bef1260f1172058fbca0aeab13366d9b67373c",
+    "path": "zig/src/core/checkpoint.zig",
+    "url": "https://raw.githubusercontent.com/ashhart/TensorFold/63bef1260f1172058fbca0aeab13366d9b67373c/zig/src/core/checkpoint.zig",
+    "bytes": 8416,
+    "sha256": "bdad2a39812ee05ab3124716c7677e931ba0721d19fed210bc26223da7ae94f2"
+  },
+  {
+    "project": "TensorFold",
+    "repo": "ashhart/TensorFold",
+    "sha": "63bef1260f1172058fbca0aeab13366d9b67373c",
+    "path": "zig/src/families/qwen27/checkpoint.zig",
+    "url": "https://raw.githubusercontent.com/ashhart/TensorFold/63bef1260f1172058fbca0aeab13366d9b67373c/zig/src/families/qwen27/checkpoint.zig",
+    "bytes": 8948,
+    "sha256": "c672e7bca9dd47c4c3e7c8af85ecb7f95aaecc965c1c5633007b56bde4b4b5a5"
+  },
+  {
+    "project": "TensorFold",
+    "repo": "ashhart/TensorFold",
+    "sha": "63bef1260f1172058fbca0aeab13366d9b67373c",
+    "path": "zig/src/families/qwen27/dflash/runtime_context.zig",
+    "url": "https://raw.githubusercontent.com/ashhart/TensorFold/63bef1260f1172058fbca0aeab13366d9b67373c/zig/src/families/qwen27/dflash/runtime_context.zig",
+    "bytes": 7129,
+    "sha256": "9c93ef1470423113e02f3b71826e5ec2ca81b2e735d8c89b64c2510ded661097"
+  },
+  {
+    "project": "TensorFold",
+    "repo": "ashhart/TensorFold",
+    "sha": "63bef1260f1172058fbca0aeab13366d9b67373c",
+    "path": "docs/cache-benchmarks.md",
+    "url": "https://raw.githubusercontent.com/ashhart/TensorFold/63bef1260f1172058fbca0aeab13366d9b67373c/docs/cache-benchmarks.md",
+    "bytes": 4107,
+    "sha256": "357bbc35cdd6db265a6ee549e4ef3fe766097d3d5590cd0fdcce6d839215c644"
+  },
+  {
+    "project": "TensorFold",
+    "repo": "ashhart/TensorFold",
+    "sha": "63bef1260f1172058fbca0aeab13366d9b67373c",
+    "path": "CONTRIBUTING.md",
+    "url": "https://raw.githubusercontent.com/ashhart/TensorFold/63bef1260f1172058fbca0aeab13366d9b67373c/CONTRIBUTING.md",
+    "bytes": 6331,
+    "sha256": "fbaebaf10fa6d7a49e4a351368c6a530bc4c6e92e0f5eaf13e0894b9d8735531"
+  },
+  {
+    "project": "TensorFold",
+    "repo": "ashhart/TensorFold",
+    "sha": "63bef1260f1172058fbca0aeab13366d9b67373c",
+    "path": "THIRD_PARTY_NOTICES.md",
+    "url": "https://raw.githubusercontent.com/ashhart/TensorFold/63bef1260f1172058fbca0aeab13366d9b67373c/THIRD_PARTY_NOTICES.md",
+    "bytes": 8929,
+    "sha256": "05016d9737ce407073594e986c96441df63ac501df82b1ccfb8de8c4f8d0c33e"
+  },
+  {
+    "project": "TensorFold",
+    "repo": "ashhart/TensorFold",
+    "sha": "63bef1260f1172058fbca0aeab13366d9b67373c",
+    "path": "zig/src/families/qwen27/dflash/runtime_head.zig",
+    "url": "https://raw.githubusercontent.com/ashhart/TensorFold/63bef1260f1172058fbca0aeab13366d9b67373c/zig/src/families/qwen27/dflash/runtime_head.zig",
+    "bytes": 4591,
+    "sha256": "f6350dc7a3e5896ada2885fcaf217d49abe022ff3a4a89a660fc39434e60fa88"
+  },
+  {
+    "project": "splash",
+    "repo": "incoai/splash",
+    "sha": "8a2b42069923d483151372b615f6182c72c2b6cd",
+    "path": "runtime/ops/LinearGguf.cpp",
+    "url": "https://raw.githubusercontent.com/incoai/splash/8a2b42069923d483151372b615f6182c72c2b6cd/runtime/ops/LinearGguf.cpp",
+    "bytes": 34026,
+    "sha256": "46fec940b0f64be1b3fc378efbadb3311c6e33a26018d655df2aeff2558b906e"
+  }
+]

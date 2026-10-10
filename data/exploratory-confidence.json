@@ -1,0 +1,53 @@
+{
+  "cold-prefill": {
+    "paired_deltas": [
+      1.2646421670000016,
+      1.1143701250000007,
+      0.8234161660000012,
+      0.4785530410000014,
+      0.13765829200000113,
+      -0.10577195799999828,
+      0.5160079169999996
+    ],
+    "mean_saved_seconds": 0.6041251071428582,
+    "exploratory_bootstrap_mean_95_interval": [
+      0.2634707022857157,
+      0.9351028394285729
+    ],
+    "limitation": "Fixed arm order and seven pairs; this interval does not remove temporal or thermal confounding."
+  },
+  "branch-changed": {
+    "paired_deltas": [
+      27.134192958,
+      27.687308958,
+      27.099191083999997,
+      27.124405708,
+      27.130401542,
+      27.204193167,
+      27.147273834
+    ],
+    "mean_saved_seconds": 27.218138178714284,
+    "exploratory_bootstrap_mean_95_interval": [
+      27.122794243999998,
+      27.381171589285714
+    ],
+    "limitation": "Fixed arm order and seven pairs; this interval does not remove temporal or thermal confounding."
+  },
+  "branch-repeat": {
+    "paired_deltas": [
+      0.11527425,
+      0.118350291,
+      0.11369379200000002,
+      0.11692587499999998,
+      0.115151584,
+      0.11479283300000004,
+      0.12107120799999999
+    ],
+    "mean_saved_seconds": 0.11646569042857143,
+    "exploratory_bootstrap_mean_95_interval": [
+      0.11489879757142858,
+      0.11834297585714286
+    ],
+    "limitation": "Fixed arm order and seven pairs; this interval does not remove temporal or thermal confounding."
+  }
+}

@@ -1,0 +1,134 @@
+{
+  "passed": true,
+  "exact_checks": 14,
+  "candidate_ids": 139328,
+  "duplicate_head_bytes_avoided": 401264640,
+  "rows": [
+    {
+      "rows": 1,
+      "seed": 42,
+      "bit_exact": true
+    },
+    {
+      "rows": 1,
+      "seed": 81,
+      "bit_exact": true
+    },
+    {
+      "rows": 1,
+      "milliseconds": {
+        "full": 2.478625043295324,
+        "indexed": 1.4891669852659106,
+        "materialized": 1.5101665048860013
+      }
+    },
+    {
+      "rows": 2,
+      "seed": 42,
+      "bit_exact": true
+    },
+    {
+      "rows": 2,
+      "seed": 81,
+      "bit_exact": true
+    },
+    {
+      "rows": 2,
+      "milliseconds": {
+        "full": 2.4349369923584163,
+        "indexed": 1.475521014072001,
+        "materialized": 1.4727915404364467
+      }
+    },
+    {
+      "rows": 3,
+      "seed": 42,
+      "bit_exact": true
+    },
+    {
+      "rows": 3,
+      "seed": 81,
+      "bit_exact": true
+    },
+    {
+      "rows": 3,
+      "milliseconds": {
+        "full": 2.4278335040435195,
+        "indexed": 1.4689789968542755,
+        "materialized": 1.4767915126867592
+      }
+    },
+    {
+      "rows": 4,
+      "seed": 42,
+      "bit_exact": true
+    },
+    {
+      "rows": 4,
+      "seed": 81,
+      "bit_exact": true
+    },
+    {
+      "rows": 4,
+      "milliseconds": {
+        "full": 2.4370834580622613,
+        "indexed": 1.4745414955541492,
+        "materialized": 1.4722084742970765
+      }
+    },
+    {
+      "rows": 7,
+      "seed": 42,
+      "bit_exact": true
+    },
+    {
+      "rows": 7,
+      "seed": 81,
+      "bit_exact": true
+    },
+    {
+      "rows": 7,
+      "milliseconds": {
+        "full": 2.4370005121454597,
+        "indexed": 1.4757714816369116,
+        "materialized": 1.4708120143041015
+      }
+    },
+    {
+      "rows": 8,
+      "seed": 42,
+      "bit_exact": true
+    },
+    {
+      "rows": 8,
+      "seed": 81,
+      "bit_exact": true
+    },
+    {
+      "rows": 8,
+      "milliseconds": {
+        "full": 2.4410419864580035,
+        "indexed": 1.4742085477337241,
+        "materialized": 1.4633749960921705
+      }
+    },
+    {
+      "rows": 16,
+      "seed": 42,
+      "bit_exact": true
+    },
+    {
+      "rows": 16,
+      "seed": 81,
+      "bit_exact": true
+    },
+    {
+      "rows": 16,
+      "milliseconds": {
+        "full": 4.4549169833771884,
+        "indexed": 2.6164790033362806,
+        "materialized": 2.6098545640707016
+      }
+    }
+  ]
+}

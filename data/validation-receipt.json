@@ -1,0 +1,78 @@
+{
+  "offline_statistics": {
+    "passed": true,
+    "primary_samples": 98,
+    "warmups": 2,
+    "summary_cells": 14,
+    "exact_saved_summary_match": true
+  },
+  "boundary_helper": {
+    "passed": true,
+    "independent_oracle_comparisons": 57024,
+    "scope": "CPU boundary helper only; not full GPU/native-state qualification"
+  },
+  "patch_checks": [
+    {
+      "check": "current patch --check",
+      "returncode": 0,
+      "diagnostic": ""
+    },
+    {
+      "check": "current patch --apply",
+      "returncode": 0,
+      "diagnostic": ""
+    },
+    {
+      "check": "01-local-prerequisites.patch --check",
+      "returncode": 0,
+      "diagnostic": ""
+    },
+    {
+      "check": "01-local-prerequisites.patch apply",
+      "returncode": 0,
+      "diagnostic": ""
+    },
+    {
+      "check": "02-qualified-host-delta.patch --check",
+      "returncode": 0,
+      "diagnostic": ""
+    },
+    {
+      "check": "02-qualified-host-delta.patch apply",
+      "returncode": 0,
+      "diagnostic": ""
+    },
+    {
+      "check": "legacy final source equals qualified snapshot",
+      "matched_files": 13,
+      "passed": true
+    }
+  ],
+  "portable_client": {
+    "fixture": "local synthetic SSE server; no model used",
+    "passed": true,
+    "checks": [
+      "reasoning-first and visible-answer timing separated",
+      "actual usage preserved",
+      "backend throughput retained",
+      "unavailable counters and memory not fabricated",
+      "no tool schemas or tool execution"
+    ]
+  },
+  "corpus": {
+    "passed": true,
+    "synthetic_cases": 50,
+    "changed_suffix_preserves_history": true,
+    "repeated_prompt_identical": true
+  },
+  "source_provenance": {
+    "qualified_delta_legacy_source_matches": 13,
+    "current_patch_full_build_and_model_validation": false
+  },
+  "new_model_inference_requests": 0,
+  "production_configuration_changed": false,
+  "notices": {
+    "url": "https://raw.githubusercontent.com/incoai/splash/8a2b42069923d483151372b615f6182c72c2b6cd/THIRD_PARTY_NOTICES",
+    "sha256": "2fedf1277bf732f8435c3e3be2798f52f25f7e2bd4155865cb366da55b88e50b"
+  }
+}

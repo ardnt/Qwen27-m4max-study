@@ -1,0 +1,117 @@
+{
+  "measured_date": "2026-10-06",
+  "backend": "TensorFold 0.6.5 / MLX",
+  "model": "Qwen3.8-27B-Uncensored-TensorFold",
+  "output_identical_all_modes": true,
+  "rows": [
+    {
+      "case": "english",
+      "repeat": 0,
+      "mode": "baseline",
+      "decode_tps": 39.764,
+      "tokens": 192,
+      "sha256": "46a837c6eead270f1a7262ca79113882b2292d0d28380c9533bf19b044dde713"
+    },
+    {
+      "case": "english",
+      "repeat": 0,
+      "mode": "head",
+      "decode_tps": 39.192,
+      "tokens": 192,
+      "sha256": "46a837c6eead270f1a7262ca79113882b2292d0d28380c9533bf19b044dde713"
+    },
+    {
+      "case": "code",
+      "repeat": 0,
+      "mode": "baseline",
+      "decode_tps": 53.64,
+      "tokens": 192,
+      "sha256": "d380ab4bf11a522c76f51ae72aa2b62fcb90adcc5be9e5a2b6efe11160d49e73"
+    },
+    {
+      "case": "code",
+      "repeat": 0,
+      "mode": "head",
+      "decode_tps": 54.26,
+      "tokens": 192,
+      "sha256": "d380ab4bf11a522c76f51ae72aa2b62fcb90adcc5be9e5a2b6efe11160d49e73"
+    },
+    {
+      "case": "arabic",
+      "repeat": 0,
+      "mode": "baseline",
+      "decode_tps": 30.075,
+      "tokens": 192,
+      "sha256": "883cbcbcfe6868b974c4f171f000b9818d25d9737504f4184558ec536f954536"
+    },
+    {
+      "case": "arabic",
+      "repeat": 0,
+      "mode": "head",
+      "decode_tps": 30.216,
+      "tokens": 192,
+      "sha256": "883cbcbcfe6868b974c4f171f000b9818d25d9737504f4184558ec536f954536"
+    },
+    {
+      "case": "english",
+      "repeat": 1,
+      "mode": "head",
+      "decode_tps": 36.691,
+      "tokens": 192,
+      "sha256": "46a837c6eead270f1a7262ca79113882b2292d0d28380c9533bf19b044dde713"
+    },
+    {
+      "case": "english",
+      "repeat": 1,
+      "mode": "baseline",
+      "decode_tps": 36.089,
+      "tokens": 192,
+      "sha256": "46a837c6eead270f1a7262ca79113882b2292d0d28380c9533bf19b044dde713"
+    },
+    {
+      "case": "code",
+      "repeat": 1,
+      "mode": "head",
+      "decode_tps": 53.805,
+      "tokens": 192,
+      "sha256": "d380ab4bf11a522c76f51ae72aa2b62fcb90adcc5be9e5a2b6efe11160d49e73"
+    },
+    {
+      "case": "code",
+      "repeat": 1,
+      "mode": "baseline",
+      "decode_tps": 52.767,
+      "tokens": 192,
+      "sha256": "d380ab4bf11a522c76f51ae72aa2b62fcb90adcc5be9e5a2b6efe11160d49e73"
+    },
+    {
+      "case": "arabic",
+      "repeat": 1,
+      "mode": "head",
+      "decode_tps": 30.084,
+      "tokens": 192,
+      "sha256": "883cbcbcfe6868b974c4f171f000b9818d25d9737504f4184558ec536f954536"
+    },
+    {
+      "case": "arabic",
+      "repeat": 1,
+      "mode": "baseline",
+      "decode_tps": 29.273,
+      "tokens": 192,
+      "sha256": "883cbcbcfe6868b974c4f171f000b9818d25d9737504f4184558ec536f954536"
+    }
+  ],
+  "summary": {
+    "baseline": {
+      "english": 37.926500000000004,
+      "code": 53.203500000000005,
+      "arabic": 29.674
+    },
+    "head": {
+      "english": 37.941500000000005,
+      "code": 54.0325,
+      "arabic": 30.15
+    }
+  },
+  "limitation": "Two repetitions per mode/domain; historical, not today's Splash backend."
+}

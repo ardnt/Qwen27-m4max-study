@@ -1,0 +1,298 @@
+--- a/runtime/engine/AneFfnStartup.cpp
++++ b/runtime/engine/AneFfnStartup.cpp
+@@ -6,6 +6,7 @@
+ 
+ #include <algorithm>
+ #include <chrono>
++#include <cstdlib>
+ #include <iomanip>
+ #include <sstream>
+ #include <stdexcept>
+@@ -192,10 +193,18 @@
+       assumed = calibration->aneUnits;
+       if (!calibration->aneUnits)
+         return gpuAloneServing(Kind::NoGain, "no Neural Engine split beat it by enough when this Mac calibrated it");
+-      AneFfnPrepared prepared = model.prepare(calibration->aneUnits, false);
++      const char *remeasure = std::getenv("SPLASH_ANE_REMEASURE");
++      const bool seeded = remeasure && std::string_view(remeasure) == "1";
++      AneFfnPrepared prepared = model.prepare(calibration->aneUnits, seeded);
++      if (seeded) {
++        const auto minimumRows = ane_ffn::minimumRows(prepared.chunks);
++        if (!minimumRows) return noGain("the remeasured parent split did not beat the current GPU policy");
++        calibration = ane_ffn::Calibration{calibration->aneUnits,*minimumRows,prepared.chunks.gpu};
++        model.remember(maxAneUnits,*calibration);
++      }
+       take(prepared, *calibration);
+       return serve(std::move(prepared), calibration->aneUnits, calibration->minimumRows, "",
+-                   "set up as calibrated before");
++                   seeded ? "validated parent split remeasured on the current GPU policy" : "set up as calibrated before");
+     }
+ 
+     const ane_ffn::Timings timings = model.time();
+--- a/runtime/engine/BranchAnchor.hpp
++++ b/runtime/engine/BranchAnchor.hpp
+@@ -0,0 +1,34 @@
++#pragma once
++
++#include <algorithm>
++#include <cstdint>
++#include <optional>
++#include <span>
++
++namespace splash::engine {
++
++// A stable history ends immediately before the final user turn. KV pages
++// alone cannot resume a hybrid model: its recurrent state and the complete
++// draft window must be captured at the same, fully verified token boundary.
++// A marker is a scheduling hint only. Prefix hashes still authorize reuse.
++[[nodiscard]] inline std::optional<uint32_t>
++branchAnchor(std::span<const uint32_t> prompt,
++             std::span<const uint32_t> marker, uint32_t pageTokens,
++             uint32_t resumeBoundary, uint32_t replayBoundary,
++             uint32_t minimumGain) {
++  if (marker.empty() || !pageTokens || prompt.size() < marker.size())
++    return std::nullopt;
++  for (size_t end = prompt.size() - marker.size() + 1; end; --end) {
++    const size_t position = end - 1;
++    if (!std::equal(marker.begin(), marker.end(), prompt.begin() + position))
++      continue;
++    const uint32_t boundary = static_cast<uint32_t>(position / pageTokens * pageTokens);
++    if (boundary <= resumeBoundary || boundary > replayBoundary ||
++        uint64_t{boundary} < uint64_t{resumeBoundary} + minimumGain)
++      return std::nullopt;
++    return boundary;
++  }
++  return std::nullopt;
++}
++
++} // namespace splash::engine
+--- a/runtime/engine/Engine.cpp
++++ b/runtime/engine/Engine.cpp
+@@ -1,7 +1,9 @@
+ #include "engine/Engine.hpp"
++#include "engine/BranchAnchor.hpp"
+ 
+ #include <algorithm>
+ #include <cmath>
++#include <cstdlib>
+ #include <limits>
+ #include <stdexcept>
+ #include <utility>
+@@ -25,6 +27,27 @@
+ // A junction costs a snapshot, a command split and up to a draft window of
+ // draft-context rows; a later request must save at least that much prefill.
+ constexpr uint32_t kMinimumJunctionGain = model::ExecutionLimits::draftContextTokens;
++
++// Opt-in, tokenizer-verified marker. No model-specific token IDs are built in.
++const std::vector<uint32_t> &branchMarker() {
++  static const std::vector<uint32_t> marker = [] {
++    std::vector<uint32_t> result;
++    const char *cursor = std::getenv("SPLASH_BRANCH_MARKER_IDS");
++    if (!cursor || !*cursor) return result;
++    while (*cursor) {
++      char *end = nullptr;
++      if (*cursor < '0' || *cursor > '9') return std::vector<uint32_t>{};
++      const unsigned long value = std::strtoul(cursor, &end, 10);
++      if (value > std::numeric_limits<uint32_t>::max() || end == cursor ||
++          (*end && *end != ',')) return std::vector<uint32_t>{};
++      result.push_back(static_cast<uint32_t>(value));
++      if (result.size() > 16) return std::vector<uint32_t>{};
++      cursor = *end ? end + 1 : end;
++    }
++    return result;
++  }();
++  return marker;
++}
+ 
+ // While an active one lives, allocations are memory a request in service
+ // needs (EngineConfig::serving).
+@@ -953,6 +976,10 @@
+   }
+   if (junctionBoundary >= stateBoundary + kMinimumJunctionGain)
+     addStateBoundary(active, stateBoundary, junctionBoundary, false);
++  if (const auto anchor = branchAnchor(
++          std::span(active.exactTokens).first(active.promptTokens), branchMarker(),
++          KvCache::pageTokens, stateBoundary, latestReplayBoundary, kMinimumJunctionGain))
++    addStateBoundary(active, stateBoundary, *anchor, false);
+   addStateBoundary(active, stateBoundary, latestReplayBoundary,
+                    latestReplayBoundary != promptReplayBoundary(active));
+   // A resumed lane below its prompt's replay point lost that state; it
+--- a/runtime/engine/RuntimeResources.mm
++++ b/runtime/engine/RuntimeResources.mm
+@@ -11,7 +11,9 @@
+ #import <Foundation/Foundation.h>
+ 
+ #include <array>
++#include <algorithm>
+ #include <chrono>
++#include <cstdlib>
+ #include <iomanip>
+ #include <limits>
+ #include <optional>
+@@ -733,11 +735,32 @@
+     });
+     return prepared;
+   };
+-  const std::string key = calibrationKey(*layers) + " device " + backend.capabilities().deviceName + " macos " +
++  const char *wide = std::getenv("SPLASH_WIDE_PREFILL");
++  const bool widePolicy = wide && std::string_view(wide) == "1";
++  // A changed short-tail scheduler does not change any ANE-eligible bulk
++  // projection. An explicitly pinned parent calibration can be reused for
++  // that unchanged policy; shape/device/macOS/memory keys and fresh numerical
++  // verification still apply. Wider bulk tiles must remeasure the seed against
++  // the current GPU policy, including the breaker's GPU-alone reference.
++  const char *parent = std::getenv("SPLASH_ANE_CALIBRATION_ID");
++  if (parent) {
++    const std::string_view id(parent);
++    if (id.size() != 68 || !id.starts_with("src-") ||
++        !std::all_of(id.begin()+4,id.end(),[](char c){return (c>='0' && c<='9') || (c>='a' && c<='f');}))
++      throw std::invalid_argument("invalid parent ANE calibration identity");
++    const char *remeasure = std::getenv("SPLASH_ANE_REMEASURE");
++    if (widePolicy && (!remeasure || std::string_view(remeasure) != "1"))
++      throw std::invalid_argument("a wider bulk policy must remeasure the parent calibration");
++  }
++  const std::string prefillPolicy = widePolicy ? " prefill n256-bulk" : "";
++  const std::string key = calibrationKey(*layers) + prefillPolicy + " device " + backend.capabilities().deviceName + " macos " +
+                           [[NSProcessInfo processInfo] operatingSystemVersionString].UTF8String + " build " +
+                           std::string(buildId) + " most ";
+-  model.recall = [key](uint32_t maxAneUnits) -> std::optional<ops::ane_ffn::Calibration> {
+-    const std::optional<std::string> line = ane::recall(key + std::to_string(maxAneUnits));
++  const std::string parentKey = parent ? calibrationKey(*layers) + " device " + backend.capabilities().deviceName + " macos " +
++                          [[NSProcessInfo processInfo] operatingSystemVersionString].UTF8String + " build " + parent + " most " : "";
++  model.recall = [key,parentKey](uint32_t maxAneUnits) -> std::optional<ops::ane_ffn::Calibration> {
++    std::optional<std::string> line = ane::recall(key + std::to_string(maxAneUnits));
++    if (!line && !parentKey.empty()) line = ane::recall(parentKey + std::to_string(maxAneUnits));
+     return line ? ops::ane_ffn::Calibration::parse(*line) : std::nullopt;
+   };
+   model.remember = [key](uint32_t maxAneUnits, const ops::ane_ffn::Calibration &calibration) {
+--- a/runtime/ops/Linear.cpp
++++ b/runtime/ops/Linear.cpp
+@@ -25,6 +25,16 @@
+     return value && std::string_view(value) == "1";
+   }();
+   return enabled;
++}
++
++uint32_t registerPrefillRows() {
++  static const uint32_t limit = [] {
++    const char *value = std::getenv("SPLASH_REGISTER_PREFILL");
++    if (value && std::string_view(value) == "128") return 128u;
++    if (value && std::string_view(value) == "64") return 64u;
++    return 0u;
++  }();
++  return limit;
+ }
+ static_assert(SPLASH_TARGET_VERIFY_ROWS == 8,
+               "Q4 register tiles require eight verify rows per lane");
+@@ -69,6 +79,11 @@
+     if (!w.rows || w.rows > SPLASH_PREFILL_TOKEN_BUDGET ||
+         w.epilogue == LinearEpilogue::GateUp)
+       throw std::invalid_argument("invalid linear prefill workload");
++  } else if (w.phase == LinearPhase::RegisterPrefill) {
++    if (w.weightLayout != WeightLayout::Affine64 || w.matrix.inputSize % 256 ||
++        !w.rows || w.rows % SPLASH_TARGET_VERIFY_ROWS || w.rows > 128 ||
++        w.epilogue == LinearEpilogue::UpWithGate)
++      throw std::invalid_argument("invalid independent register prefill geometry");
+   } else {
+     if (w.matrix.inputSize % 256 || !w.rows || w.rows % SPLASH_TARGET_VERIFY_ROWS ||
+         w.rows > SPLASH_TARGET_VERIFY_ROWS * SPLASH_MAXIMUM_BATCH_WIDTH ||
+@@ -90,7 +105,8 @@
+ // plain and residual projections, the Q4 register tile, and the one-lane
+ // Paired256 (plain) tile.
+ bool supportsFourSimdgroups(LinearWorkload w, LinearTile tile) noexcept {
+-  if (tile == LinearTile::Q4Register) return w.phase == LinearPhase::Decode;
++  if (tile == LinearTile::Q4Register)
++    return w.phase == LinearPhase::Decode || w.phase == LinearPhase::RegisterPrefill;
+   // Only the affine paired N256 kernel is instantiated: this tile is used
+   // for wide plain projections; residual and gate/up retain their own tiles.
+   if (tile == LinearTile::Paired256)
+@@ -533,7 +549,28 @@
+   if (w.weightLayout == WeightLayout::Block32) return ggufBaseline(w, projections);
+   const uint32_t tiles128 = w.matrix.outputSize / 128;
+   const uint32_t tiles256 = w.matrix.outputSize / 256;
++  if (w.phase == LinearPhase::RegisterPrefill) {
++    const uint32_t columns = w.epilogue == LinearEpilogue::GateUp ? 32 : 64;
++    const uint64_t rowTiles = w.rows / SPLASH_TARGET_VERIFY_ROWS;
++    const uint64_t grid = uint64_t{w.matrix.outputSize / columns} * rowTiles;
++    const uint32_t groups = w.matrix.inputSize / 64;
++    uint32_t splits = 1;
++    // Count all independent row tiles, unlike the physical-lane decode policy.
++    // When they already occupy the GPU, extra K partitions waste reductions.
++    while (splits < LinearConfig::kMaximumSplits && grid * splits < 8ULL * gpuCores_ &&
++           groups % (2 * splits) == 0 && groups / (2 * splits) >= 12)
++      splits *= 2;
++    return {LinearTile::Q4Register, 0, LinearSimdgroups::Four, splits};
++  }
+   if (w.phase == LinearPhase::Prefill) {
++    // An isolated alternative for the 32-core Apple9 device: double columns
++    // per matrix tile on bulk prefill, without touching decode or short tails.
++    static const bool widePrefill = [] {
++      const char *value = std::getenv("SPLASH_WIDE_PREFILL");
++      return value && std::string_view(value) == "1";
++    }();
++    if (widePrefill && family_ == GpuFamilyClass::Apple9 && w.rows >= 512)
++      return {LinearTile::N256, 0};
+     if (family_ == GpuFamilyClass::Apple10 || gpuCores_ <= kApple9MeasuredPrefillCores)
+       return {LinearTile::N128, 0, LinearSimdgroups::Four};
+     const uint32_t rowTiles = (w.rows + kAffinePrefillTileRows - 1) / kAffinePrefillTileRows;
+@@ -605,6 +642,13 @@
+   return plan(decode({p.outputSize, p.inputSize}, lanes, epilogue), p, gate);
+ }
+ LinearPlan Linear::prefillPlan(const Projection &p, uint32_t rows, LinearEpilogue epilogue) const {
++  if (family_ == GpuFamilyClass::Apple9 && registerPrefillRows() &&
++      rows && rows <= registerPrefillRows() && p.layout() == WeightLayout::Affine64 &&
++      !p.rotation && !p.planeInputs() && p.inputSize % 256 == 0 &&
++      epilogue != LinearEpilogue::UpWithGate) {
++    const uint32_t padded = (rows + 7) / 8 * 8;
++    return plan({{p.outputSize,p.inputSize},padded,LinearPhase::RegisterPrefill,epilogue},p);
++  }
+   // Cached chat tails are too small to occupy a 32-row prefill matrix tile.
+   // Run the existing eight-row register kernels on padded independent rows.
+   // Attention, GDN, position handling and sequence lengths still use the
+@@ -631,6 +675,12 @@
+ 
+ LinearScratchSize Linear::prefillScratchSize(ProjectionShape shape) const {
+   LinearScratchSize bound;
++  if (registerPrefillRows() && family_ == GpuFamilyClass::Apple9 &&
++      shape.layout == WeightLayout::Affine64 && shape.inputSize % 256 == 0 && !shape.rotated)
++    for (uint32_t rows = 8; rows <= registerPrefillRows(); rows += 8)
++      for (const auto epilogue : {LinearEpilogue::None, LinearEpilogue::Residual, LinearEpilogue::GateUp})
++        bound.include(plan({{shape.outputSize,shape.inputSize},rows,LinearPhase::RegisterPrefill,epilogue})
++                      .scratchSize());
+   if (shortPrefillEnabled() && family_ == GpuFamilyClass::Apple9 &&
+       shape.layout == WeightLayout::Affine64 && shape.inputSize % 256 == 0)
+     bound.include(decodeScratchSize(shape));
+@@ -790,6 +840,20 @@
+ void Linear::addPrefillSwiGlu(metal::CommandGraph &graph, const SwiGluProjections &ffn,
+                               const PrefillFfnBuffers &b, metal::MetalBuffer residual, metal::MetalBuffer output,
+                               uint32_t rows) const {
++  const char *registerFused = std::getenv("SPLASH_REGISTER_PREFILL_FUSED");
++  // Keep the original prefill up-projection's fp32 SiLU multiplication by
++  // default. The decode fusion rounds up to bf16 first; it is an ablation,
++  // not a numerically equivalent replacement for that prefill epilogue.
++  if (registerFused && std::string_view(registerFused) == "1" &&
++      registerPrefillRows() && rows && rows <= registerPrefillRows() &&
++      family_ == GpuFamilyClass::Apple9 && ffn.up->layout() == WeightLayout::Affine64 &&
++      ffn.gate->layout() == WeightLayout::Affine64 && ffn.up->inputSize % 256 == 0 &&
++      !ffn.up->rotation && !ffn.up->planeInputs()) {
++    add(graph, {.input=b.normalized,.output=b.intermediate,.gateScratch=b.gateScratch,.scratch=b.scratch},
++        *ffn.up, prefillPlan(*ffn.up,rows,LinearEpilogue::GateUp),ffn.gate);
++    addPrefillResidual(graph,b.intermediate,*ffn.down,residual,output,b.downSums,rows,b.scratch);
++    return;
++  }
+   const char *fused = std::getenv("SPLASH_SHORT_PREFILL_FUSED");
+   if (fused && std::string_view(fused) == "1" &&
+       shortPrefillEnabled() && family_ == GpuFamilyClass::Apple9 && rows && rows <= 32 &&
+--- a/runtime/ops/Linear.hpp
++++ b/runtime/ops/Linear.hpp
+@@ -54,7 +54,9 @@
+ // (Projection::leadingInputs), or of its inputSize when that is 0.
+ void requireSegmentPlanes(const QuantizedSegment &segment, std::string_view what, uint32_t planeInputs = 0);
+ 
+-enum class LinearPhase : uint8_t { Prefill, Decode };
++// RegisterPrefill uses independent eight-row matrix tiles; these are virtual
++// row tiles, not physical model lanes. The model's four-lane limit is unchanged.
++enum class LinearPhase : uint8_t { Prefill, Decode, RegisterPrefill };
+ enum class LinearEpilogue : uint8_t { None, Residual, GateUp, UpWithGate };
+ // Compute tiles over the affine storage tiles. Paired tiles pipeline two
+ // quant groups of one lane. Split128 is the N128 tile with K split across

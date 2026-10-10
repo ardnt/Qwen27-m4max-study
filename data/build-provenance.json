@@ -1,0 +1,12 @@
+{
+  "base_archive_sha256": "e8f7f49fc53b9c856b692fd709d39ab48aebdf6cb23ac59d478f697988f856e7",
+  "bundle_metallib_sha256": "30dd9a792a07699ab95f8bda62d295568807bbb94429b9518f60f3b4746d8099",
+  "release_binary_sha256": "7fda8712d3acb0f0c2337250ecb8ab64850114ae1527e7f37c8dfdba74c0dba5",
+  "source_identity": {
+    "build_id": "src-71920fe2e4eb532dacd2f229f80ef01f79c47fa542fad1d1313ce29cfd830222",
+    "schema_version": 1,
+    "source_sha256": "71920fe2e4eb532dacd2f229f80ef01f79c47fa542fad1d1313ce29cfd830222"
+  },
+  "original_source_commit": "0d5a035ea26d1cc566e3c7ee4e08e5e06fa68cf7",
+  "reused_archive_limitation": "Unchanged translation units reuse the pinned existing compiled host archive; source commit alone does not prove their build provenance."
+}

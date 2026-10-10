@@ -1,0 +1,128 @@
+[
+  {
+    "phase": "final-stock",
+    "case_id": "spec-python-0",
+    "completion_tokens": 349,
+    "finish_reason": "stop",
+    "syntax": true,
+    "passed": false,
+    "failure": "NameError from class-local import used as an unqualified global"
+  },
+  {
+    "phase": "final-stock",
+    "case_id": "spec-python-4",
+    "completion_tokens": 353,
+    "finish_reason": "stop",
+    "syntax": true,
+    "passed": false,
+    "failure": "NameError from class-local import used as an unqualified global"
+  },
+  {
+    "phase": "final-stock",
+    "case_id": "spec-python-3",
+    "completion_tokens": 335,
+    "finish_reason": "stop",
+    "syntax": true,
+    "passed": false,
+    "failure": "NameError from class-local import used as an unqualified global"
+  },
+  {
+    "phase": "final-stock",
+    "case_id": "spec-python-1",
+    "completion_tokens": 310,
+    "finish_reason": "stop",
+    "syntax": true,
+    "passed": false,
+    "failure": "NameError from class-local import used as an unqualified global"
+  },
+  {
+    "phase": "final-stock",
+    "case_id": "spec-python-5",
+    "completion_tokens": 335,
+    "finish_reason": "stop",
+    "syntax": true,
+    "passed": false,
+    "failure": "NameError from class-local import used as an unqualified global"
+  },
+  {
+    "phase": "final-stock",
+    "case_id": "spec-python-2",
+    "completion_tokens": 391,
+    "finish_reason": "stop",
+    "syntax": true,
+    "passed": false,
+    "failure": "NameError from class-local import used as an unqualified global"
+  },
+  {
+    "phase": "final-stock",
+    "case_id": "spec-python-6",
+    "completion_tokens": 336,
+    "finish_reason": "stop",
+    "syntax": true,
+    "passed": false,
+    "failure": "NameError from class-local import used as an unqualified global"
+  },
+  {
+    "phase": "final-enhanced",
+    "case_id": "spec-python-0",
+    "completion_tokens": 349,
+    "finish_reason": "stop",
+    "syntax": true,
+    "passed": false,
+    "failure": "NameError from class-local import used as an unqualified global"
+  },
+  {
+    "phase": "final-enhanced",
+    "case_id": "spec-python-4",
+    "completion_tokens": 352,
+    "finish_reason": "stop",
+    "syntax": true,
+    "passed": false,
+    "failure": "NameError from class-local import used as an unqualified global"
+  },
+  {
+    "phase": "final-enhanced",
+    "case_id": "spec-python-3",
+    "completion_tokens": 339,
+    "finish_reason": "stop",
+    "syntax": true,
+    "passed": false,
+    "failure": "NameError from class-local import used as an unqualified global"
+  },
+  {
+    "phase": "final-enhanced",
+    "case_id": "spec-python-1",
+    "completion_tokens": 310,
+    "finish_reason": "stop",
+    "syntax": true,
+    "passed": false,
+    "failure": "NameError from class-local import used as an unqualified global"
+  },
+  {
+    "phase": "final-enhanced",
+    "case_id": "spec-python-5",
+    "completion_tokens": 335,
+    "finish_reason": "stop",
+    "syntax": true,
+    "passed": false,
+    "failure": "NameError from class-local import used as an unqualified global"
+  },
+  {
+    "phase": "final-enhanced",
+    "case_id": "spec-python-2",
+    "completion_tokens": 346,
+    "finish_reason": "stop",
+    "syntax": true,
+    "passed": false,
+    "failure": "NameError from class-local import used as an unqualified global"
+  },
+  {
+    "phase": "final-enhanced",
+    "case_id": "spec-python-6",
+    "completion_tokens": 335,
+    "finish_reason": "stop",
+    "syntax": true,
+    "passed": false,
+    "failure": "NameError from class-local import used as an unqualified global"
+  }
+]
