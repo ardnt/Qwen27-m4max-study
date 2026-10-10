@@ -4,6 +4,8 @@ This package documents a local Qwen3.8-27B Q4 optimization on an M4 Max with 36 
 
 Repository: [ardnt/Qwen27-m4max-study](https://github.com/ardnt/Qwen27-m4max-study). The [technical article](https://github.com/ardnt/Qwen27-m4max-study/blob/main/technical-article.md), patches and individual results are included here. A complete downloadable source bundle is available in `artifacts/`; its SHA-256 accompanies it. `MANIFEST.json` covers the 35 source-package files, excluding the manifest itself and the external bundle.
 
+Upstream discussion: [Splash proposal #361](https://github.com/incoai/splash/issues/361). The proposal includes links pinned to the initially published evidence commit; current-source build and GPU qualification remain outstanding.
+
 The strongest result is **first changed 8K follow-up TTFT: 27.561 s → 0.427 s** in seven paired fixtures under the measured cache pressure. This is a reduction in repeated prompt processing, not a 64.5× improvement in sustained generation. An earlier three-pair rebuilt control with a surviving 4K checkpoint measured 14.599 s → 0.602 s. Both conditions matter.
 
 There is no claim of inventing hybrid prefix caching or conversation-boundary checkpoints. Marconi, current llama.cpp, and current TensorFold have closely related techniques. The contribution is a specific proactive checkpoint policy for Splash, its interaction with DFlash2 state, and measured scheduling changes on this Mac.

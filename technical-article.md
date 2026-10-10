@@ -67,3 +67,5 @@ A second local adaptation reads selected vocabulary rows directly from existing 
 A maintainer can review a small branch-placement patch, a fixed synthetic corpus, individual results and the target/draft work counters. A frontend-provided message boundary would be a cleaner long-term interface than an environment marker. The scheduler can continue to choose checkpoints under its existing memory policy.
 
 The remaining bottlenecks are visible: completely new 8K prompts still take around 26.6 seconds, and draft acceptance remains content-dependent. This work improves a specific, common conversation failure. It provides no current cross-runtime speed ranking or measured intelligence gain. The full evidence and source provenance accompany the article so those limits remain inspectable.
+
+The [source and reproducibility package](https://github.com/ardnt/Qwen27-m4max-study) contains the measurements, synthetic corpus, analysis script and draft patch. The upstream proposal is open for review in [Splash issue #361](https://github.com/incoai/splash/issues/361).

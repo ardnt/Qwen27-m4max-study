@@ -22,8 +22,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 3110,
-      "sha256": "258ce3ded774ee6c9a81704a568aeb5c835bc4ade1f193f4a7517be666b3d308"
+      "bytes": 3343,
+      "sha256": "83bb55818feef4a26c2a52108a96703fa46d8b76578a4fc9e6e0d11dcbe4db6b"
     },
     {
       "path": "UPSTREAM-SPLASH-NOTICES",
@@ -157,8 +157,8 @@
     },
     {
       "path": "technical-article.md",
-      "bytes": 7639,
-      "sha256": "267028ccc19dd670f8237a25360a2724cdf405b36f04c358de7a9bce1a385ff5"
+      "bytes": 7914,
+      "sha256": "dd5655d27be1be01ae50cc3bbc25ce2ac6971f5b9d7f7f2fdbddf49f2bcc2be6"
     },
     {
       "path": "tests/branch_anchor_test.cpp",
@@ -187,5 +187,5 @@
     ],
     "review_scope": "allowlisted data and text sources; no production configuration, binary, weights, personal chats or credentials included"
   },
-  "uncompressed_bytes": 1838840
+  "uncompressed_bytes": 1839348
 }
