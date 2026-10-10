@@ -1,0 +1,327 @@
+{
+  "manifest": {
+    "family": "Qwen3.8-27B",
+    "target_format": "mlx-affine",
+    "version": 1,
+    "vision_format": "safetensors",
+    "files": {
+      "config.json": {
+        "bytes": 5187,
+        "digest": "f238d3a11e8d96b4f688fd09c627879b9b87a067835c83cb7c1c102df7aa4fb0"
+      },
+      "draft/config.json": {
+        "bytes": 1239,
+        "digest": "79279cc5665bced6f3cdaa2095a2ffe819497b2e"
+      },
+      "draft/model.safetensors": {
+        "bytes": 3848817896,
+        "digest": "67fc76d68dc5a9415511a4f394ef744d67510cd20e93b37cc2cc7d28e4bab65c"
+      },
+      "target/config.json": {
+        "bytes": 5187,
+        "digest": "f238d3a11e8d96b4f688fd09c627879b9b87a067835c83cb7c1c102df7aa4fb0"
+      },
+      "target/model-00001-of-00003.safetensors": {
+        "bytes": 5343268752,
+        "digest": "014e69ab23abb0ec453346930260b2f78785c36e23b1922c6992ec6ec9732b37"
+      },
+      "target/model-00002-of-00003.safetensors": {
+        "bytes": 5354185100,
+        "digest": "3f275e43480498e0d1d113a726c746066dfab73927a22873c45a238be55cee13"
+      },
+      "target/model-00003-of-00003.safetensors": {
+        "bytes": 5357087747,
+        "digest": "ef97c143824615510df09938a188bbdf475f9e41a9475113b3fb07090c842137"
+      },
+      "tokenizer/chat_template.jinja": {
+        "bytes": 8952,
+        "digest": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041"
+      },
+      "tokenizer/config.json": {
+        "bytes": 5187,
+        "digest": "f238d3a11e8d96b4f688fd09c627879b9b87a067835c83cb7c1c102df7aa4fb0"
+      },
+      "tokenizer/tokenizer.json": {
+        "bytes": 19989325,
+        "digest": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523"
+      },
+      "tokenizer/tokenizer_config.json": {
+        "bytes": 1165,
+        "digest": "792fa3f0cb88b111e54ef3134c873531008c4df471d108da17903426e308aa7b"
+      },
+      "tokenizer/vocab.json": {
+        "bytes": 6722759,
+        "digest": "ce99b4cb2983d118806ce0a8b777a35b093e2000a503ebde25853284c9dfa003"
+      },
+      "vision/config.json": {
+        "bytes": 5187,
+        "digest": "f238d3a11e8d96b4f688fd09c627879b9b87a067835c83cb7c1c102df7aa4fb0"
+      },
+      "vision/model-00001-of-00003.safetensors": {
+        "bytes": 5343268752,
+        "digest": "014e69ab23abb0ec453346930260b2f78785c36e23b1922c6992ec6ec9732b37"
+      }
+    }
+  },
+  "config": {
+    "architectures": [
+      "Qwen3_5ForConditionalGeneration"
+    ],
+    "do_sample": true,
+    "eos_token_id": [
+      248046,
+      248044
+    ],
+    "generation_config": {
+      "bos_token_id": 248044,
+      "do_sample": true,
+      "eos_token_id": [
+        248046,
+        248044
+      ],
+      "pad_token_id": 248044,
+      "temperature": 1.0,
+      "top_k": 20,
+      "top_p": 0.95
+    },
+    "image_token_id": 248056,
+    "language_model_only": false,
+    "model_type": "qwen3_5",
+    "quantization": {
+      "bits": 4,
+      "group_size": 64,
+      "mode": "affine"
+    },
+    "quantization_config": {
+      "bits": 4,
+      "group_size": 64,
+      "mode": "affine"
+    },
+    "rope_parameters": {
+      "mrope_interleaved": true,
+      "mrope_section": [
+        11,
+        11,
+        10
+      ],
+      "partial_rotary_factor": 0.25,
+      "rope_theta": 10000000,
+      "rope_type": "default"
+    },
+    "temperature": 1.0,
+    "text_config": {
+      "attention_bias": false,
+      "attention_dropout": 0.0,
+      "attn_output_gate": true,
+      "bos_token_id": 248044,
+      "dtype": "bfloat16",
+      "eos_token_id": 248044,
+      "full_attention_interval": 4,
+      "head_dim": 256,
+      "hidden_act": "silu",
+      "hidden_size": 5120,
+      "initializer_range": 0.02,
+      "intermediate_size": 17408,
+      "layer_types": [
+        "linear_attention",
+        "linear_attention",
+        "linear_attention",
+        "full_attention",
+        "linear_attention",
+        "linear_attention",
+        "linear_attention",
+        "full_attention",
+        "linear_attention",
+        "linear_attention",
+        "linear_attention",
+        "full_attention",
+        "linear_attention",
+        "linear_attention",
+        "linear_attention",
+        "full_attention",
+        "linear_attention",
+        "linear_attention",
+        "linear_attention",
+        "full_attention",
+        "linear_attention",
+        "linear_attention",
+        "linear_attention",
+        "full_attention",
+        "linear_attention",
+        "linear_attention",
+        "linear_attention",
+        "full_attention",
+        "linear_attention",
+        "linear_attention",
+        "linear_attention",
+        "full_attention",
+        "linear_attention",
+        "linear_attention",
+        "linear_attention",
+        "full_attention",
+        "linear_attention",
+        "linear_attention",
+        "linear_attention",
+        "full_attention",
+        "linear_attention",
+        "linear_attention",
+        "linear_attention",
+        "full_attention",
+        "linear_attention",
+        "linear_attention",
+        "linear_attention",
+        "full_attention",
+        "linear_attention",
+        "linear_attention",
+        "linear_attention",
+        "full_attention",
+        "linear_attention",
+        "linear_attention",
+        "linear_attention",
+        "full_attention",
+        "linear_attention",
+        "linear_attention",
+        "linear_attention",
+        "full_attention",
+        "linear_attention",
+        "linear_attention",
+        "linear_attention",
+        "full_attention"
+      ],
+      "linear_conv_kernel_dim": 4,
+      "linear_key_head_dim": 128,
+      "linear_num_key_heads": 16,
+      "linear_num_value_heads": 48,
+      "linear_value_head_dim": 128,
+      "mamba_ssm_dtype": "float32",
+      "max_position_embeddings": 262144,
+      "model_type": "qwen3_5_text",
+      "mtp_num_hidden_layers": 1,
+      "mtp_use_dedicated_embeddings": false,
+      "num_attention_heads": 24,
+      "num_hidden_layers": 64,
+      "num_key_value_heads": 4,
+      "output_gate_type": "swish",
+      "pad_token_id": null,
+      "partial_rotary_factor": 0.25,
+      "rms_norm_eps": 1e-06,
+      "rope_parameters": {
+        "mrope_interleaved": true,
+        "mrope_section": [
+          11,
+          11,
+          10
+        ],
+        "partial_rotary_factor": 0.25,
+        "rope_theta": 10000000,
+        "rope_type": "default"
+      },
+      "tie_word_embeddings": false,
+      "use_cache": true,
+      "vocab_size": 248320
+    },
+    "tie_word_embeddings": false,
+    "top_k": 20,
+    "top_p": 0.95,
+    "transformers_version": "5.8.0.dev0",
+    "video_token_id": 248057,
+    "vision_config": {
+      "deepstack_visual_indexes": [],
+      "depth": 27,
+      "hidden_act": "gelu_pytorch_tanh",
+      "hidden_size": 1152,
+      "in_channels": 3,
+      "initializer_range": 0.02,
+      "intermediate_size": 4304,
+      "model_type": "qwen3_5",
+      "num_heads": 16,
+      "num_position_embeddings": 2304,
+      "out_hidden_size": 5120,
+      "patch_size": 16,
+      "spatial_merge_size": 2,
+      "temporal_patch_size": 2
+    },
+    "vision_end_token_id": 248054,
+    "vision_start_token_id": 248053
+  },
+  "draft_config": {
+    "architectures": [
+      "DFlash2DraftModel"
+    ],
+    "attention_bias": false,
+    "attention_dropout": 0.0,
+    "bos_token_id": null,
+    "is_causal": false,
+    "dflash_config": {
+      "block_size": 8,
+      "conv_group_size": 16,
+      "conv_kernel_size": 2,
+      "mask_token_id": 248070,
+      "selector_rank": 256,
+      "selector_top_k": 16,
+      "target_layer_ids": [
+        5,
+        19,
+        33,
+        47,
+        61
+      ]
+    },
+    "dtype": "bfloat16",
+    "eos_token_id": 248044,
+    "head_dim": 128,
+    "hidden_act": "silu",
+    "hidden_size": 5120,
+    "initializer_range": 0.02,
+    "intermediate_size": 17408,
+    "layer_types": [
+      "sliding_attention",
+      "sliding_attention",
+      "sliding_attention",
+      "sliding_attention",
+      "sliding_attention"
+    ],
+    "max_position_embeddings": 262144,
+    "max_window_layers": 5,
+    "model_type": "qwen3",
+    "num_attention_heads": 32,
+    "num_hidden_layers": 5,
+    "num_key_value_heads": 8,
+    "num_target_layers": 64,
+    "pad_token_id": 248044,
+    "rms_norm_eps": 1e-06,
+    "rope_parameters": {
+      "rope_theta": 10000000,
+      "rope_type": "default"
+    },
+    "sliding_window": 2048,
+    "tie_word_embeddings": false,
+    "transformers_version": "5.15.0",
+    "use_cache": true,
+    "use_sliding_window": true,
+    "vocab_size": 248320
+  },
+  "tokenizer_checks": [
+    {
+      "file": "tokenizer.json",
+      "served_sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+      "local_counter_sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523"
+    },
+    {
+      "file": "tokenizer_config.json",
+      "served_sha256": "792fa3f0cb88b111e54ef3134c873531008c4df471d108da17903426e308aa7b",
+      "local_counter_sha256": "47a7a8371379b07650b22f3c8a78c32fed85c4e35ea88e3da0c4b7a7611e8082"
+    },
+    {
+      "file": "chat_template.jinja",
+      "served_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+      "local_counter_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041"
+    }
+  ],
+  "manifest_digest_note": "Weight digests inherited from resolver manifest; not rehashed during timing.",
+  "tokenizer_config_differences": {
+    "chat_template": "Counter config embeds the same template; served config loads it from the identical .jinja file."
+  },
+  "effective_template_exact_match": true,
+  "identity_note": "Resolver digests are retained as recorded, not uniformly asserted to be SHA-256. Exact remote target checkpoint revision remains unverified. Both experiments use the same local model files."
+}

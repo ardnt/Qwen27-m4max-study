@@ -1,0 +1,135 @@
+--- a/runtime/engine/SemanticPlanner.hpp
++++ b/runtime/engine/SemanticPlanner.hpp
+@@ -10,7 +10,7 @@
+ 
+ namespace splash::engine::semantic {
+ 
+-enum class Mode : uint8_t { Off, Shadow, On };
++enum class Mode : uint8_t { Off, Shadow, On, Simple };
+ struct PlannerSnapshot {
+   Mode mode = Mode::Off;
+   uint64_t decisions = 0, selectedStates = 0, abstentions = 0, invalid = 0;
+@@ -28,6 +28,7 @@
+   uint32_t resume = 0, replay = 0;
+   Costs decisionCosts;
+   std::vector<Forecast> forecast;
++  bool admissionDeferred = false;
+ };
+ 
+ // Per-engine, bounded, CPU-only learner. Observations are exact token overlaps,
+@@ -41,10 +42,12 @@
+     if (!value) return Mode::Off;
+     if (std::string_view(value) == "on") return Mode::On;
+     if (std::string_view(value) == "shadow") return Mode::Shadow;
++    if (std::string_view(value) == "simple") return Mode::Simple;
+     return Mode::Off;
+   }
+   [[nodiscard]] bool enabled() const noexcept { return stats_.mode != Mode::Off; }
+-  [[nodiscard]] bool applies() const noexcept { return stats_.mode == Mode::On; }
++  [[nodiscard]] bool applies() const noexcept { return stats_.mode == Mode::On || stats_.mode == Mode::Simple; }
++  [[nodiscard]] bool learns() const noexcept { return enabled() && stats_.mode != Mode::Simple; }
+   [[nodiscard]] PlannerSnapshot snapshot() const { return stats_; }
+ 
+   // Counts use the model's *actual* committed target/draft rows. Coefficients
+@@ -52,7 +55,7 @@
+   // time, not invented measurements of separate kernels. Five weak priors
+   // keep underidentified routes conservative until diverse commands arrive.
+   void observeCommand(uint32_t rows, uint64_t draftRows, double wallMs) noexcept {
+-    if (!enabled() || !rows || rows > 2048 || draftRows > 4096 ||
++    if (!learns() || !rows || rows > 2048 || draftRows > 4096 ||
+         !std::isfinite(wallMs) || wallMs <= 0.0 || wallMs > 30000.0) return;
+     const std::array<double, 5> x{
+         rows >= 512 ? rows / 512.0 : 0.0,
+@@ -68,13 +71,13 @@
+     fit();
+   }
+   void observeCapture(double ms) noexcept {
+-    if (!enabled() || !std::isfinite(ms) || ms <= 0.0 || ms > 30000.0) return;
++    if (!learns() || !std::isfinite(ms) || ms <= 0.0 || ms > 30000.0) return;
+     stats_.costs.snapshotMs = stats_.captureSamples ?
+         0.8 * stats_.costs.snapshotMs + 0.2 * ms : ms;
+     ++stats_.captureSamples;
+   }
+   void observeRestore(double ms) noexcept {
+-    if (!enabled() || !std::isfinite(ms) || ms < 0.0 || ms > 30000.0) return;
++    if (!learns() || !std::isfinite(ms) || ms < 0.0 || ms > 30000.0) return;
+     stats_.costs.restoreMs = stats_.restoreSamples ?
+         0.8 * stats_.costs.restoreMs + 0.2 * ms : ms;
+     ++stats_.restoreSamples;
+@@ -100,7 +103,7 @@
+   void observePrompt(std::span<const uint32_t> prompt,
+                      std::span<const uint32_t> marker, uint32_t page,
+                      uint32_t replay) {
+-    if (!enabled() || prompt.size() > 65536) return;
++    if (!learns() || prompt.size() > 65536) return;
+     const auto cuts = userBoundaries(prompt, marker, page);
+     if (cuts.empty()) return;
+     if (!previousTokens_.empty()) {
+@@ -136,7 +139,14 @@
+     input.forecast.clear(); input.hints.clear();
+     // Validate geometry before division when constructing aligned candidates.
+     // plan() below still records Invalid and leaves placement to native fallback.
+-    if (valid(input) && !cuts.empty()) {
++    // A shape prior alone is insufficient evidence to split a short, new,
++    // single-turn prompt. Preserve the old long-prefix opportunity, and allow
++    // multi-turn histories or a native observed junction to justify admission.
++    // This deliberately gives up speculative first-branch wins below 2K.
++    const bool eligible = !cuts.empty() && (cuts.size() > 1 || cuts.back() >= 2048 ||
++        (cuts.back() >= 512 && observedJunction >= cuts.back()));
++    stats_.admissionDeferred = valid(input) && !cuts.empty() && !eligible;
++    if (valid(input) && eligible && stats_.mode != Mode::Simple) {
+       const History &history = histories_[shape(prompt.size(), cuts)];
+       // Two documented pseudo-observations, then a rolling 64 transition window.
+       constexpr std::array<double, 4> prior{0.55, 0.15, 0.20, 0.10};
+@@ -165,7 +175,27 @@
+                                  stats_.probabilities[1] / earlier.size()});
+       }
+     }
+-    Result result = plan(input);
++    Result result;
++    if (stats_.mode != Mode::Simple) result = plan(input);
++    else if (!valid(input)) result.reason = Reason::Invalid;
++    else if (input.growthPaused) result.reason = Reason::Pressure;
++    else if (input.maximumBytes < input.stateBytes || !input.maximumStates)
++      result.reason = Reason::MemoryBudget;
++    else if (eligible) {
++      // Deliberately simple comparator: latest then earlier user boundaries,
++      // minimum 512 rows saved, with the same native state and memory limits.
++      // No regression fit, forecast learner, or dynamic program is used.
++      const auto limit = std::min<uint64_t>(input.maximumStates,
++                                           input.maximumBytes / input.stateBytes);
++      for (auto it = cuts.rbegin(); it != cuts.rend(); ++it) {
++        if (*it <= input.resume || *it >= input.replay || *it - input.resume < 512) continue;
++        ++result.candidateCount;
++        if (result.selected.size() < limit) result.selected.push_back(*it);
++      }
++      std::sort(result.selected.begin(), result.selected.end());
++      result.retainedBytes = result.selected.size() * input.stateBytes;
++      if (!result.selected.empty()) result.reason = Reason::Selected;
++    }
+     ++stats_.decisions;
+     stats_.selectedStates += result.selected.size();
+     if (result.selected.empty()) ++stats_.abstentions;
+--- a/runtime/engine/Status.cpp
++++ b/runtime/engine/Status.cpp
+@@ -16,7 +16,7 @@
+ const char *boolean(bool value) noexcept { return value ? "true" : "false"; }
+ 
+ void appendSemanticPlanner(std::ostringstream &out, const semantic::PlannerSnapshot &s) {
+-  constexpr std::string_view modes[]{"off", "shadow", "on"};
++  constexpr std::string_view modes[]{"off", "shadow", "on", "simple"};
+   constexpr std::string_view reasons[]{"selected", "not_worthwhile", "memory_budget", "pressure", "invalid"};
+   out << "{\"mode\":" << json::quote(modes[static_cast<size_t>(s.mode)])
+       << ",\"decisions\":" << s.decisions << ",\"selected_states\":" << s.selectedStates
+@@ -25,7 +25,10 @@
+       << ",\"restore_samples\":" << s.restoreSamples
+       << ",\"overlap_observations\":" << s.overlapObservations << ",\"unrelated\":" << s.unrelated
+       << ",\"last_plan_us\":" << s.lastPlanUs << ",\"maximum_plan_us\":" << s.maximumPlanUs
+-      << ",\"cost_scope\":\"regularized_command_wall_estimates_and_measured_cpu_capture_restore\""
++      << ",\"admission_policy\":\"conservative_v2\""
++      << ",\"admission_deferred\":" << boolean(s.admissionDeferred)
++      << ",\"cost_scope\":" << json::quote(s.mode == semantic::Mode::Simple ?
++          "none_simple_boundary_policy" : "regularized_command_wall_estimates_and_measured_cpu_capture_restore")
+       << ",\"coefficients\":{\"bulk_row_ms\":" << s.costs.bulkRowMs
+       << ",\"middle_row_ms\":" << s.costs.middleRowMs
+       << ",\"short_row_ms\":" << s.costs.shortRowMs << ",\"draft_row_ms\":" << s.costs.draftRowMs

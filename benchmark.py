@@ -137,8 +137,9 @@ def request(case, args, headers, monitor):
         connection_setup_seconds = (time.perf_counter_ns() - started) / 1e9
         if monitor.reason:
             raise RuntimeError(monitor.reason)
-        # Successful request timers intentionally exclude connection setup.
-        started = time.perf_counter_ns()
+        # Historical suites exclude connect; controlled trials include it.
+        if not getattr(args, 'include_connection_setup', False):
+            started = time.perf_counter_ns()
         conn.request('POST', url.path + ('?' + url.query if url.query else ''), payload,
                      {'Content-Type': 'application/json', **headers})
         response = conn.getresponse()

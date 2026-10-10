@@ -51,8 +51,26 @@ planner does not solve genuinely cold prefill, lost RAM state, translation
 quality, remote app filesystem errors or voice latency. New improvements need
 focused tests with unchanged timing boundaries and numerical/state checks.
 
-The strongest publishable primary contribution remains cost-aware complete-state
-placement. The Drift mixed-precision route and INT4 allocation correction are
+The cost-aware placement implementation is a useful engineering experiment, but
+its added complexity is not established as necessary. The later randomized study
+missed its predeclared threshold and found output differences; see
+[controlled comparisons](controlled/README.md) and [prior art](PRIOR_ART.md). The Drift mixed-precision route and INT4 allocation correction are
 separate useful prototypes. The historical indexed draft head already published
 in `secondary/` avoids 382.7 MiB in the older MLX path; it is not active inside
 Splash and its modest n=2 speed differences remain exploratory.
+
+
+## Later randomized comparison correction
+
+The cost-aware planner's initial randomized comparison reduced median paired
+whole-block latency by 8.66% versus the original heuristic and 23.76% versus the
+stock checkpoint policy within one tuned binary. It did not meet the declared
+10% improvement requirement against the heuristic. Unrelated cold requests
+regressed by about 10%, and two of 105 three-way output pairs differed. Therefore
+neither universal output identity nor a universally better policy is established.
+
+Broad first-semantic-checkpoint and first-cost-aware-placement implications are
+withdrawn in light of the [closer prior art](PRIOR_ART.md). Global performance
+superiority was not tested. The final conservative candidate is a separate
+experiment with its own same-binary simple-policy comparator and fresh prompts;
+it does not erase the earlier negative results.

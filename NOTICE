@@ -29,3 +29,9 @@ The secondary ML Drift prototypes modify Google ML Drift source, pinned at
 29e3d2b41a7128d7d5dd9cd1ba09f226cca14d22, under Apache-2.0.
 Original work: Google LLC and ML Drift contributors; local modifications: project
 contributors, 2026. See secondary/drift for the scope and retained source context.
+
+The final conservative policy and simple comparator retain Splash's native
+complete-state machinery. The duplicate CPU-oracle extraction in
+controlled/final/tests/vendor retains the same provenance and Apache-2.0 notices.
+See PRIOR_ART.md for the expanded attribution and the limitations of novelty
+claims. Captured third-party research-page bodies are not redistributed.

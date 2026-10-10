@@ -1,0 +1,27 @@
+{
+  "source_protocol_sha256": "a892bcb4a48b60cd3a46a67e20b1b0c9b46da31ab7bffe29a7472226979fa3a9",
+  "source_artifact_hashes": {
+    "corpus.json.gz": "116561af7a0fb00b2f3ed69d8a83c39a11edc6d1d258e561da099d0e56737059",
+    "summary.json": "e0d6d8dbcb3dc1c64478fdde985ec2b5bb7a39fd26cd6be5c64b717bbe9a7f5c",
+    "results.csv": "50e05dd048b05aedd3e7adab694ec335fa46cb2f59dc392aa0e0f897fc7f6eb0",
+    "verification.json": "0584d5405eb8d091f211518463e3b3c5823caff15fba10e26667e776f3e56e89",
+    "raw.jsonl": "35e5527c2198965545e6f65b13677a712c2ce4e156ae4921d3fac6bf95d301ba",
+    "decisions.jsonl": "add48227486f30773d9037c71ff78f136adf0ce70616f64a5fd275e29aed77b2",
+    "worker-starts.jsonl": "27bc27b7b3e2fd4664353fbab0d0560fe4745e0a418fe62aa31aabb8efff2840"
+  },
+  "redactions": [
+    "host paths",
+    "process identifiers",
+    "production health/configuration",
+    "disk-free capacity"
+  ],
+  "preserved": [
+    "all individual timings",
+    "synthetic input corpus and outputs",
+    "native counters",
+    "family memory samples",
+    "decision receipts",
+    "randomized order"
+  ],
+  "request_body_checks": "Original local verification checks each recorded serialized request against the corpus and across arms; network traces are not redistributed."
+}

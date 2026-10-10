@@ -1,5 +1,18 @@
 # Timing and counter definitions
 
+The definitions below describe the historical datasets/client. The new
+`controlled/original` and `controlled/final` experiments explicitly include
+connection setup in client TTFT/E2E: their clock starts before connect/POST and
+ends at SSE DONE. Serialization and model startup remain excluded.
+`controlled/replay.py` uses that newer boundary; the historical client keeps its
+old boundary. Do not silently compare these client timings as identical metrics.
+
+Controlled code throughput uses per-request native output-counter / decode-wall
+deltas, then reports the median across seven short code samples. Its acceptance
+table reports the median of per-request accepted/proposed ratios, not a ratio of
+summed counters. Raw tiny-answer stream rates are preserved but suppressed from
+headline tables because speculative-batch delivery can make them meaningless.
+
 - `client_ttft`: time from sending the inference request to the first nonempty generated content or reasoning delta, using `perf_counter_ns`.
 - `client_visible`: time to the first nonempty answer-content delta. Thinking was disabled in the saved primary corpus; both timings coincide there.
 - `client_e2e`: request send through stream completion. Connection setup precedes this interval in the portable script.

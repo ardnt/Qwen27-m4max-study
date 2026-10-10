@@ -38,3 +38,19 @@ It does not load into the measured Splash decoder or the current native Zig Tens
 ## Cost-aware extension
 
 The [four-stage historical chain](semantic/README.md#native-integration) adds the measured cost-aware planner and a separately tested controller validation fix. It does not change the qualification status of the current-main heuristic draft above.
+
+
+## Final conservative policy revision
+
+The [new controlled comparisons](controlled/README.md) supersede broad causal
+interpretations of the earlier fixed-order experiment. The original 315-request
+randomized comparison failed its declared complexity rule and showed two
+nonidentical Python outputs. Historical data remains intact.
+
+The final patch `controlled/final/05-conservative-admission.patch` follows the
+existing 01–04 chain. It adds a conservative short-prompt admission gate and a
+bounded simple policy for ablation. Both policies preserve native identity and
+allocation checks. `simple` has no regression fit, overlap-history learner or DP.
+Only this revised source's independently recorded final trial may be used for
+claims about the revised candidate. There is no current-main integration or
+clean-from-source reproducibility claim.
