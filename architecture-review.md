@@ -1,5 +1,7 @@
 # Architecture audit — 10 October 2026
 
+> Historical heuristic study. The implemented cost-aware extension and newer results are in [the planner article](semantic/ARTICLE.md). These are separate experiments.
+
 ## Assessment
 
 There is useful work to contribute, especially to Splash's first-branch state placement. The evidence does **not** establish that this installation is ahead of every engine, kernel, or runtime. It is an optimized integration of upstream model and runtime technology, with a few local source changes and a substantial improvement in a specific latency failure.
@@ -99,4 +101,4 @@ The contribution can be valuable without being a new algorithm: a narrowly scope
 
 No current public runtime performance ranking, quality/intelligence superiority, universal zero-regression claim, new fundamental model architecture, new DFlash algorithm, or global originality is established. The qualified host build reused an existing compiled archive; the nearby source commit alone does not certify all unchanged translation units. The original checkpoint's exact remote revision is not independently certified in this package.
 
-The next research opportunity is exposing semantic message boundaries to the native planner, using measured snapshot cost and reuse likelihood to prioritize them, and preserving the complete target/draft state contract. Those are proposed extensions, not implemented or benchmarked results. Public engines already address parts of that problem; improvements should be presented and evaluated as an extension of that work.
+The next research opportunity is exposing semantic message boundaries to the native planner, using measured snapshot cost and reuse likelihood to prioritize them, and preserving the complete target/draft state contract. At the time of this original audit these were proposed extensions. The later [cost-aware planner study](semantic/README.md) implements measured-cost user-boundary placement; frontend tool/document spans and global eviction opportunity cost remain future work. Public engines already address parts of that problem; improvements should be presented and evaluated as an extension of that work.

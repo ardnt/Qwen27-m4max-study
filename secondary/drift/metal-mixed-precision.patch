@@ -1,0 +1,39 @@
+--- a/ml_drift/common/kernels/conv_wave_matrix.cc
++++ b/ml_drift/common/kernels/conv_wave_matrix.cc
+@@ -996,6 +996,17 @@
+   const int src_slices = DivideRoundUp(weights_shape.i, 4);
+   const int dst_slices = DivideRoundUp(weights_shape.o, 4);
+   if (gpu_info.IsApple()) {
++    if (precision == CalculationsPrecision::kF32F16 &&
++        gpu_info.IsApiMetal() &&
++        gpu_info.SupportsWaveMatMulOp(
++            WaveMatMulOpDescriptor{/*m_size=*/8,
++                                   /*n_size=*/8,
++                                   /*k_size=*/8,
++                                   /*left_type=*/DataType::kFloat16,
++                                   /*right_type=*/DataType::kFloat16,
++                                   /*result_type=*/DataType::kFloat32})) {
++      return src_slices % 2 == 0 && dst_slices % 4 == 0;
++    }
+     const auto type = DeduceDataTypeFromPrecision(precision);
+     if ((precision == CalculationsPrecision::kF32 ||
+          precision == CalculationsPrecision::kF16) &&
+--- a/ml_drift/metal/environment.mm
++++ b/ml_drift/metal/environment.mm
+@@ -84,6 +84,16 @@
+                                                                .left_type = DataType::kFloat16,
+                                                                .right_type = DataType::kFloat16,
+                                                                .result_type = DataType::kFloat16});
++    // Verified on the M4 Max by the isolated projection accuracy tests.
++    if (gpu_info.apple_info.gpu_type == AppleGpu::kM4Max) {
++      gpu_info.wave_mat_mul_ops.push_back(
++          WaveMatMulOpDescriptor{.m_size = 8,
++                                 .n_size = 8,
++                                 .k_size = 8,
++                                 .left_type = DataType::kFloat16,
++                                 .right_type = DataType::kFloat16,
++                                 .result_type = DataType::kFloat32});
++    }
+     gpu_info.wave_mat_mul_ops.push_back(WaveMatMulOpDescriptor{.m_size = 8,
+                                                                .n_size = 8,
+                                                                .k_size = 8,

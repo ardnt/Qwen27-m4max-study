@@ -1,5 +1,7 @@
 # Why a cached 27B conversation still took 27 seconds to start
 
+> Historical heuristic study. The implemented cost-aware extension and newer results are in [the planner article](semantic/ARTICLE.md). These are separate experiments.
+
 On a 36 GiB M4 Max, a local Qwen3.8-27B Q4 installation could answer an exact repeated prompt quickly yet stall when only the final question changed. The model weights were already loaded. Much of the attention cache was reusable. Nevertheless, the first changed 8K request took a median 27.561 seconds to emit text in the measured workload.
 
 An additional checkpoint before the final user turn reduced that median to 0.427 seconds. The useful finding is where the runtime saves resumable state, not a claim that a 27B model suddenly generates text 64 times faster.

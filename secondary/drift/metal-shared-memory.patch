@@ -1,0 +1,16 @@
+--- a/ml_drift/common/kernels/fully_connected_util.cc
++++ b/ml_drift/common/kernels/fully_connected_util.cc
+@@ -295,7 +295,12 @@
+                                                                           : 4;
+   int workgroup_storage_size = work_group_size.x * work_group_size.y *
+                                local_batch_size * data_type_size * 4;
+-  if (local_batch_size > 8 ||
++  // This M4 Max compiler reports 64 KiB for the 32 KiB batched reduction.
++  // Reuse one reduction array to remain within its 32 KiB device limit.
++  if ((gpu_info.IsApiMetal() && gpu_info.IsApple() &&
++       gpu_info.apple_info.gpu_type == AppleGpu::kM4Max &&
++       workgroup_storage_size >= 32768) ||
++      local_batch_size > 8 ||
+       (gpu_info.IsApiWebGpu() &&
+        workgroup_storage_size >
+            gpu_info.webgpu_info.max_compute_workgroup_storage_size)) {

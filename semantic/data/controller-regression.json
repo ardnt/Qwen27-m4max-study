@@ -1,0 +1,6 @@
+{
+  "original_measured_controller": "UBSan: division by zero on zero chunk",
+  "original_exit_nonzero": true,
+  "exported_fixed_controller": "passed under UBSan",
+  "fix_scope": "Guard malformed geometry before alignment; no production deployment or new inference claim."
+}

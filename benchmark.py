@@ -120,7 +120,6 @@ def request(case, args, headers, monitor):
     url = urllib.parse.urlsplit(args.base_url.rstrip('/') + '/chat/completions')
     factory = http.client.HTTPSConnection if url.scheme == 'https' else http.client.HTTPConnection
     conn = factory(url.hostname, url.port, timeout=args.timeout)
-    conn.connect()
     with monitor.lock:
         monitor.connection = conn
         sample_begin = len(monitor.samples)
@@ -129,9 +128,17 @@ def request(case, args, headers, monitor):
     output, reasoning, extras, errors = [], [], {}, []
     tool_calls = False
     finish = None
+    stream_done = False
     status = None
     started = time.perf_counter_ns()
+    connection_setup_seconds = None
     try:
+        conn.connect()
+        connection_setup_seconds = (time.perf_counter_ns() - started) / 1e9
+        if monitor.reason:
+            raise RuntimeError(monitor.reason)
+        # Successful request timers intentionally exclude connection setup.
+        started = time.perf_counter_ns()
         conn.request('POST', url.path + ('?' + url.query if url.query else ''), payload,
                      {'Content-Type': 'application/json', **headers})
         response = conn.getresponse()
@@ -149,6 +156,7 @@ def request(case, args, headers, monitor):
                     continue
                 data = line[5:].strip()
                 if data == b'[DONE]':
+                    stream_done = True
                     break
                 event = json.loads(data)
                 if event.get('error'):
@@ -172,7 +180,7 @@ def request(case, args, headers, monitor):
                         reasoning.append(thought)
                     tool_calls = tool_calls or bool(delta.get('tool_calls'))
                     finish = choice.get('finish_reason') or finish
-    except (OSError, ValueError, http.client.HTTPException) as exc:
+    except (OSError, ValueError, RuntimeError, http.client.HTTPException) as exc:
         errors.append(type(exc).__name__)
     finally:
         ended = time.perf_counter_ns()
@@ -182,6 +190,10 @@ def request(case, args, headers, monitor):
     after = metrics(args.metrics_url, headers)
     counters = {k: after[k] - before[k] for k in before.keys() & after.keys()
                 if k.startswith('splash_') and (k.endswith('_total') or k.endswith('_sum'))}
+    if status == 200 and (not stream_done or finish is None):
+        errors.append('incomplete SSE response: missing finish reason or DONE')
+    if any(v < 0 for v in counters.values()):
+        errors.append('runtime counters reset during request')
     concurrent = counters.get('splash_requests_submitted_total')
     if concurrent is not None and concurrent != 1:
         errors.append('counter interval includes other requests')
@@ -194,7 +206,7 @@ def request(case, args, headers, monitor):
     row = {'case_id': case['id'], 'family': case['family'], 'category': case['category'],
            'phase': args.label, 'repeat': case.get('repeat'), 'warmup': case['id'] == 'spec-prime',
            'utc': datetime.datetime.now(datetime.timezone.utc).isoformat(),
-           'http_status': status, 'client_ttft': (first - started) / 1e9 if first else None,
+           'http_status': status, 'connection_setup_seconds': connection_setup_seconds, 'client_ttft': (first - started) / 1e9 if first else None,
            'client_visible': (visible - started) / 1e9 if visible else None,
            'client_e2e': (ended - started) / 1e9, 'json_serialization_ns': prepare,
            'prompt_tokens': actual_input, 'output_tokens': actual_output,
@@ -220,7 +232,7 @@ def main():
     parser.add_argument('--model', required=True)
     parser.add_argument('--label', required=True, help='Build/configuration name recorded with each result')
     parser.add_argument('--output', type=Path, required=True, help='New JSONL output file; existing files are refused')
-    parser.add_argument('--suite', choices=('branch', 'prefill', 'speculation', 'all'), required=True)
+    parser.add_argument('--suite', choices=('branch', 'prefill', 'speculation', 'all', 'semantic'), required=True)
     parser.add_argument('--metrics-url', help='Optional native Prometheus endpoint; otherwise internal counters unavailable')
     parser.add_argument('--token-env', default='BENCH_API_KEY', help='Read a key from this environment variable; never record it')
     parser.add_argument('--timeout', type=float, default=120)
@@ -230,10 +242,11 @@ def main():
         parser.error('base URL must be http(s), without embedded credentials')
     if args.timeout <= 0:
         parser.error('timeout must be positive')
-    with gzip.open(ROOT / 'data/prompts.json.gz', 'rt') as f:
+    corpus_path = ROOT / ('semantic/data/corpus.json.gz' if args.suite == 'semantic' else 'data/prompts.json.gz')
+    with gzip.open(corpus_path, 'rt') as f:
         corpus = json.load(f)
     cases = {case['id']: case for case in corpus['cases']}
-    ids = ['spec-prime']
+    ids = list(cases) if args.suite == 'semantic' else ['spec-prime']
     if args.suite in ('speculation', 'all'):
         generation = [f'spec-{category}-{r}' for category in ('english', 'arabic', 'python') for r in range(7)]
         random.Random(202610102).shuffle(generation)

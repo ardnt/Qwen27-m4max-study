@@ -1,0 +1,70 @@
+{
+  "base_revision": "0d5a035ea26d1cc566e3c7ee4e08e5e06fa68cf7",
+  "source_files": [
+    {
+      "path": "runtime/engine/AneFfnStartup.cpp",
+      "sha256": "5315804b479a19df02c23fc766227132ea7e506dfbf01a78dc102063174e64a1"
+    },
+    {
+      "path": "runtime/engine/Engine.cpp",
+      "sha256": "be4b018804f1ea3d135cafbdd6b934378f8c430258a428d2214ffcf8011d15be"
+    },
+    {
+      "path": "runtime/engine/Engine.hpp",
+      "sha256": "514c555013751c68e1f617cf05471aa8d52ee36531c3a1d1d19198a346406fc8"
+    },
+    {
+      "path": "runtime/engine/NativeArguments.cpp",
+      "sha256": "8749a9531dff57a8d9bf32bab1749bcdfd305687d4fbd87a5bf95e0669d14513"
+    },
+    {
+      "path": "runtime/engine/RuntimeResources.mm",
+      "sha256": "1f0539d23098eee85df21587eafde0091793d7b2d5fd4b377dcd321d78a91fe1"
+    },
+    {
+      "path": "runtime/engine/Status.cpp",
+      "sha256": "fc4523ecbcc2105679fc16702de49376851639713835f8b6a70451025919fc19"
+    },
+    {
+      "path": "runtime/model/DFlashDraft.cpp",
+      "sha256": "21a932bdf8b1cf13a351695848faa8bbb9d6dc15fe090c1c11be55509c0fe574"
+    },
+    {
+      "path": "runtime/model/DFlashDraft.hpp",
+      "sha256": "9139e8f36c120b7ef0a22a07adfb30fedb5ab7f414086007cfcd9b2ae42dfa25"
+    },
+    {
+      "path": "runtime/model/Model.hpp",
+      "sha256": "0acd3f3ad980528817c26ca1f979e7681aec1eba4a76441aa8d6157cc02dc800"
+    },
+    {
+      "path": "runtime/model/Runtime.cpp",
+      "sha256": "0273a2b81b5c8f67d4f64a853839620f495c71c17e82bd5b6d907a39682b3d12"
+    },
+    {
+      "path": "runtime/model/RuntimeArenas.cpp",
+      "sha256": "21d53963faf6b5de2079b90fbb9424b5b3dce0c8259c435653f6202b4aff18b2"
+    },
+    {
+      "path": "runtime/model/RuntimeArenas.hpp",
+      "sha256": "d6bea5ebe53a3bc3f4072dad0dfe4390d58049227fc23404c94a2d302159a8da"
+    },
+    {
+      "path": "runtime/ops/Linear.cpp",
+      "sha256": "16626bfde678fcc0a4f01e339007bc8506f9012cba69a9ef2a12332befaa2e58"
+    },
+    {
+      "path": "runtime/ops/Linear.hpp",
+      "sha256": "6f42e2983087b3404e8259c443bdb0e0eec7ddf4d7c11cf980ab8334ee8d3674"
+    }
+  ],
+  "patches": [
+    "patches/legacy/01-local-prerequisites.patch",
+    "patches/legacy/02-qualified-host-delta.patch",
+    "semantic/patches/03-measured-semantic-planner.patch",
+    "semantic/patches/04-controller-validation.patch"
+  ],
+  "sequential_apply_check": "passed",
+  "exported_headers_equal_patched_source": true,
+  "qualification": "Source application only; no native build or GPU qualification performed in publication review."
+}

@@ -25,6 +25,14 @@ def ratio(row, numerator, denominator):
     n, d = c.get(numerator), c.get(denominator)
     return n / (d / 1000) if n is not None and d is not None and d > 0 else None
 
+def complete_counter_sum(rows, name):
+    """An absent/reset counter is unavailable, never a measured zero."""
+    values = [r['runtime_counter_deltas'].get(name) for r in rows]
+    if any(not isinstance(v, (int, float)) or isinstance(v, bool)
+           or not math.isfinite(v) or v < 0 for v in values):
+        return None
+    return sum(values)
+
 def summarize(rows):
     groups = collections.defaultdict(list)
     for row in rows:
@@ -55,13 +63,16 @@ def summarize(rows):
             'peak_family_gib': [r['peak_family_footprint_bytes'] / 2**30
                                if r.get('peak_family_footprint_bytes') is not None else None for r in rs]}
         item.update({name: stats(values) for name, values in metrics.items()})
-        counters = [r['runtime_counter_deltas'] for r in rs]
-        proposed = sum(c.get('splash_drafted_tokens_total') or 0 for c in counters)
-        accepted = sum(c.get('splash_accepted_draft_tokens_total') or 0 for c in counters)
-        iterations = sum(c.get('splash_scheduler_decode_batches_total') or 0 for c in counters)
+        proposed = complete_counter_sum(rs, 'splash_drafted_tokens_total')
+        accepted = complete_counter_sum(rs, 'splash_accepted_draft_tokens_total')
+        iterations = complete_counter_sum(rs, 'splash_scheduler_decode_batches_total')
+        acceptance = (accepted / proposed if proposed and accepted is not None
+                      and accepted <= proposed else None)
+        outputs = [r['output_tokens'] for r in rs]
         item.update(drafted=proposed, accepted=accepted, iterations=iterations,
-                    acceptance=accepted / proposed if proposed else None,
-                    output_per_iteration=sum(r['output_tokens'] for r in rs) / iterations if iterations else None)
+                    acceptance=acceptance,
+                    output_per_iteration=sum(outputs) / iterations
+                    if iterations and all(v is not None for v in outputs) else None)
         results.append(item)
     return results
 
@@ -88,8 +99,10 @@ def main():
         writer.writerows(rows)
     print('Verified', sum(r['n'] for r in result), 'measured samples in', len(result), 'cells')
     for r in result:
+        rate = r['backend_decode_tps']['median'] if r['backend_decode_tps'] else None
+        rate_text = f'{rate:.2f}' if rate is not None else 'unavailable'
         print(f"{r['phase']:14} {r['family']:14} {r['category']:9} n={r['n']} "
-              f"TTFT={r['ttft']['median']:.6f}s decode={r['backend_decode_tps']['median']:.2f}tok/s")
+              f"TTFT={r['ttft']['median']:.6f}s decode={rate_text}tok/s")
 
 if __name__ == '__main__':
     main()

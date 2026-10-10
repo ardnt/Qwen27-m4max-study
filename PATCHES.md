@@ -34,3 +34,7 @@ Current Splash uses a changed quantized layout and a `LinearGguf` policy. The le
 `secondary/indexed_draft_head.py` targets the older TensorFold Python/MLX fragment-kernel interface. It replaces only weight-row addressing, checks quantization and input type, and retains a source-pattern guard. It imports upstream kernel generation rather than copying an entire shader.
 
 It does not load into the measured Splash decoder or the current native Zig TensorFold engine. The public evidence covers 14 numerical comparisons and a small historical two-repetition/domain decode comparison. A native port would require new tests and benchmarking.
+
+## Cost-aware extension
+
+The [four-stage historical chain](semantic/README.md#native-integration) adds the measured cost-aware planner and a separately tested controller validation fix. It does not change the qualification status of the current-main heuristic draft above.

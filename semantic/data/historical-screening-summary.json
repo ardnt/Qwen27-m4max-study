@@ -1,0 +1,149 @@
+[
+  {
+    "phase": "control",
+    "category": "english",
+    "n": 3,
+    "decode_p50_tps": 34.777652283331335,
+    "ttft_p50_s": 0.772262083
+  },
+  {
+    "phase": "control",
+    "category": "arabic",
+    "n": 3,
+    "decode_p50_tps": 26.87572550163256,
+    "ttft_p50_s": 0.954333167
+  },
+  {
+    "phase": "control",
+    "category": "python",
+    "n": 3,
+    "decode_p50_tps": 79.88027480930569,
+    "ttft_p50_s": 0.780629792
+  },
+  {
+    "phase": "unary",
+    "category": "english",
+    "n": 3,
+    "decode_p50_tps": 33.978336090691656,
+    "ttft_p50_s": 0.738225417
+  },
+  {
+    "phase": "unary",
+    "category": "arabic",
+    "n": 3,
+    "decode_p50_tps": 25.397811802890015,
+    "ttft_p50_s": 0.946665834
+  },
+  {
+    "phase": "unary",
+    "category": "python",
+    "n": 3,
+    "decode_p50_tps": 80.56474720183454,
+    "ttft_p50_s": 0.77921025
+  },
+  {
+    "phase": "groups8",
+    "category": "english",
+    "n": 3,
+    "decode_p50_tps": 34.99468126890346,
+    "ttft_p50_s": 0.756804958
+  },
+  {
+    "phase": "groups8",
+    "category": "arabic",
+    "n": 3,
+    "decode_p50_tps": 27.067757593884128,
+    "ttft_p50_s": 0.943015125
+  },
+  {
+    "phase": "groups8",
+    "category": "python",
+    "n": 3,
+    "decode_p50_tps": 80.39511804638798,
+    "ttft_p50_s": 0.779266333
+  },
+  {
+    "phase": "groups4",
+    "category": "english",
+    "n": 3,
+    "decode_p50_tps": 33.25693864453645,
+    "ttft_p50_s": 0.707991708
+  },
+  {
+    "phase": "groups4",
+    "category": "arabic",
+    "n": 3,
+    "decode_p50_tps": 26.57012069910913,
+    "ttft_p50_s": 0.936332792
+  },
+  {
+    "phase": "groups4",
+    "category": "python",
+    "n": 3,
+    "decode_p50_tps": 78.44519326503156,
+    "ttft_p50_s": 0.779726209
+  },
+  {
+    "phase": "recent-control",
+    "category": "english",
+    "n": 3,
+    "decode_p50_tps": 33.367825127307036,
+    "ttft_p50_s": 0.558112208
+  },
+  {
+    "phase": "recent-control",
+    "category": "arabic",
+    "n": 3,
+    "decode_p50_tps": 26.252044300838833,
+    "ttft_p50_s": 0.762305333
+  },
+  {
+    "phase": "recent-control",
+    "category": "python",
+    "n": 3,
+    "decode_p50_tps": 77.28044180634116,
+    "ttft_p50_s": 0.657696875
+  },
+  {
+    "phase": "recent256",
+    "category": "english",
+    "n": 3,
+    "decode_p50_tps": 32.06831544381454,
+    "ttft_p50_s": 0.544293292
+  },
+  {
+    "phase": "recent256",
+    "category": "arabic",
+    "n": 3,
+    "decode_p50_tps": 26.03778415601514,
+    "ttft_p50_s": 0.751970083
+  },
+  {
+    "phase": "recent256",
+    "category": "python",
+    "n": 3,
+    "decode_p50_tps": 77.3066981153035,
+    "ttft_p50_s": 0.659740459
+  },
+  {
+    "phase": "recent512",
+    "category": "english",
+    "n": 3,
+    "decode_p50_tps": 31.746693052807,
+    "ttft_p50_s": 0.574296625
+  },
+  {
+    "phase": "recent512",
+    "category": "arabic",
+    "n": 3,
+    "decode_p50_tps": 26.609758375056693,
+    "ttft_p50_s": 0.766162833
+  },
+  {
+    "phase": "recent512",
+    "category": "python",
+    "n": 3,
+    "decode_p50_tps": 77.1902937550752,
+    "ttft_p50_s": 0.672541334
+  }
+]

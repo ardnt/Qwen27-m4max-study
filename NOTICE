@@ -19,3 +19,13 @@ upstream systems, algorithms, trained weights or compiled kernels is made.
 
 Local engineering adaptations and synthetic evidence: project contributors, 2026.
 This package redistributes no upstream executable, compiled shader or model weight.
+
+The semantic planner extends existing checkpoint-placement ideas, including
+Marconi and Sparse Prefix Caching for Hybrid and Recurrent LLM Serving.
+The CPU oracle includes an attributed extraction of Splash draft-window planning;
+see semantic/tests/vendor/PROVENANCE.md.
+
+The secondary ML Drift prototypes modify Google ML Drift source, pinned at
+29e3d2b41a7128d7d5dd9cd1ba09f226cca14d22, under Apache-2.0.
+Original work: Google LLC and ML Drift contributors; local modifications: project
+contributors, 2026. See secondary/drift for the scope and retained source context.
