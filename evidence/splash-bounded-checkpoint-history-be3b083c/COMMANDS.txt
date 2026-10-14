@@ -1,0 +1,34 @@
+Validation commands and scope
+
+Expanded CPU compiler/linker argv and exact run environments are in
+evidence/integrated-be3b083/cpu-commands-portable.json. Native build, link and
+targeted Metal argv are in native-commands-portable.json in the same directory.
+These substitute documented placeholders only for machine-specific paths.
+All CPU builds used DEVELOPER_DIR=<XCODE_DEVELOPER_DIR>.
+Sanitized binaries used ASAN_OPTIONS=detect_leaks=0:abort_on_error=1 and
+UBSAN_OPTIONS=halt_on_error=1:print_stacktrace=1. Every runtime translation unit
+linked into those CPU binaries was instrumented; this is not whole-project or
+LeakSanitizer coverage.
+
+Executed CPU wrapper commands, from the new isolated submission root:
+python3 private-evidence/integration-tests/run-integration-cpu.py candidate --suite cache --suite engine --suffix=-r1
+python3 private-evidence/integration-tests/run-integration-cpu.py candidate --suite engine --suffix=-r2
+python3 private-evidence/integration-tests/run-integration-cpu.py candidate --suite engine --suffix=-r3
+python3 private-evidence/integration-tests/run-integration-cpu.py candidate --sanitized --suite cache --suite engine --suffix=-r4
+python3 checks/run-governor-checks.py
+
+Results and the preserved initial test-only compile error are in TEST_RESULTS.txt
+and cpu-source-checks.json. The wrappers and raw logs are retained locally;
+portable expanded argv make the CPU checks inspectable without those wrappers.
+
+Executed native wrapper commands, from the isolated validation directory:
+env PYTHONDONTWRITEBYTECODE=1 python3 prepare-real-model-overlays.py --freeze-inputs
+env PYTHONDONTWRITEBYTECODE=1 python3 real-model-build.py --mode both --jobs 2 --observation diagnostic --build-name native-build-1-diagnostic --execute-approved-build
+env PYTHONDONTWRITEBYTECODE=1 python3 run-metal-qualification.py --execute
+env PYTHONDONTWRITEBYTECODE=1 HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 TOKENIZERS_PARALLELISM=false <EXISTING_PYTHON> -B real-model-run.py --model-root <LOCAL_MODEL_ASSEMBLY> --memory-bytes 25000000000 --max-context 32768 --diagnostic-build-name native-build-1-diagnostic --run-name integration-smoke-1 --execute-approved-model-run
+
+The native wrappers, diagnostic driver, overlays, raw logs and binaries remain
+local evidence and are excluded from the source PR. This compact evidence set
+is a command/result record, not a self-contained native benchmark distribution.
+Only one diagnostic six-request sequence per arm was run on be3b083c; no new
+performance estimate or seven-pair performance rerun is included.

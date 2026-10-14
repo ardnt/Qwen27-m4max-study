@@ -1,0 +1,52 @@
+Focused integration smoke on be3b083c5f413673d44e44881042e875e674e333
+
+One serial fresh diagnostic six-request sequence per arm; no new performance
+estimate. Both arms passed all task, output, isolation, allocation and stability
+checks. All six paired raw output-token arrays matched. Disk caching was verified
+off in both arms; ANE off, fp32 state, bf16 KV, context 32768, exact 25,000,000,000
+byte native ceiling and frozen tokenizer/model/DFlash inputs matched.
+
+Request           prompt  KVmatch  restore A/C    target rows A/C  draft context A/C  TTFT seconds A/C
+cold_prime         12201        0 0/0        12201/12201      6153/6153       62.348753/60.911317
+grow_history       30201    12192 12192/12192    18009/18009      8217/8217       101.857452/101.466763
+older_edit         30201    17984 12192/16384    18009/13817      9817/6169       102.003325/78.738931
+latest_edit        30201    29984 24576/24576    5625/5625       2265/2265       33.112020/32.899846
+exact_repeat       30201    30176 30176/30176    25/25         25/25         0.254182/0.252687
+ordinary_append    30403    30176 30176/30176    227/227        227/227        1.622505/1.642351
+
+Actual sealed capture boundaries and successful publication counts:
+cold_prime: A [4096, 8192, 12192] (3 publications); C [4096, 8192, 12192] (3 publications)
+grow_history: A [16384, 20480, 24576, 30176] (4 publications); C [16384, 20480, 24576, 30176] (4 publications)
+older_edit: A [17984, 20480, 24576, 30176] (4 publications); C [20480, 24576, 30176] (3 publications)
+latest_edit: A [29984, 30176] (2 publications); C [29984, 30176] (2 publications)
+exact_repeat: A [] (0 publications); C [] (0 publications)
+ordinary_append: A [30400] (1 publications); C [30400] (1 publications)
+
+All reservation attempts succeeded. Post-command snapshot attempts=0, yields=0,
+allocation refusals=0, publication failures=0, state evictions=0 and suspensions=0
+in both arms. Baseline retired 5 checkpoints; candidate retired 3. Capture totals
+were 14/13; downstream capture differences follow the different restored prefix.
+Final candidate optional quota: 2 entries/320,077,824 payload bytes; each real
+snapshot was 160,038,912 bytes. Current-source smoke confirms retention/reuse,
+not native pressure yielding. The changed post-command fallback is CPU-covered.
+
+Accounting (A/C, bytes):
+Final cached payload: 1,440,350,208 / 1,600,389,120
+Final KV allocated: 3,019,898,880 / 3,019,898,880
+Final state allocation including pools: 1,796,472,832 / 1,956,511,744
+Maximum request-end native charge: 24,048,206,912 / 24,208,245,824
+Sampled peak RSS: 2,824,896,512 / 3,284,369,408
+Sampled peak physical footprint: 23,767,231,744 / 23,926,762,992
+Sampled swap: 0/0; memory pressure remained normal. Sampling interval 1 second.
+
+Diagnostic complete-sequence durations, excluding startup, were
+301.654978s / 276.371931s. These are one observation per arm with
+detailed tracing; no speedup or new-base performance inference is made.
+
+The unchanged seven-pair 742ceb48 result remains 7.54% / 22.46 seconds. To claim
+performance on be3b083c, a separately authorized repetition of that matched
+seven-pair protocol on be3b083c would be needed; it was not run.
+
+Draft context rows exclude restore-ring reconstruction. Matching output tokens
+are corpus-level evidence, not numerical equivalence. No full real-model
+captured-state oracle run is claimed.

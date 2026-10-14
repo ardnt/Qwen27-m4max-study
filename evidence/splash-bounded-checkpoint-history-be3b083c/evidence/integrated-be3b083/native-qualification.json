@@ -1,0 +1,44 @@
+{
+  "source_pin": "be3b083c5f413673d44e44881042e875e674e333",
+  "native_builds": {
+    "A": "pass",
+    "C": "pass"
+  },
+  "independently_clean_builds": true,
+  "profile": "diagnostic only; no timing comparison claim",
+  "products_sha256": {
+    "A": {
+      "real-model-driver": "1fe4ee34de0d0199e9b77a5e1a43e1a7e47c34ef191d2742a9cd2e0015a1201c",
+      "splash.metallib": "a611aff2c9e61879345397ac5bea28a58f2278fcc3864176e7842ad20bd02b11",
+      "ObservedRuntime.o": "d115aa5d9047606f6bc47360cbae40ce65960c5d6769f71ee82dd88288971791",
+      "ObservedResources.o": "b322302ed6e7e792b359c63dfb7af21707dda6a22f9017f77994161400eae0ec"
+    },
+    "C": {
+      "real-model-driver": "65ad32286d31285ef560f969e25e1abb08fd1b73b11fcf05b05567ae34ab5fa0",
+      "splash.metallib": "a611aff2c9e61879345397ac5bea28a58f2278fcc3864176e7842ad20bd02b11",
+      "ObservedRuntime.o": "d115aa5d9047606f6bc47360cbae40ce65960c5d6769f71ee82dd88288971791",
+      "ObservedResources.o": "d7b23cb5d46c945da0490dcfe9907a27e4e247192ea97244c6dbeb4045494f12",
+      "ObservedStateCache.o": "7ec6112d0ec82666de51bc7599870bcda112507d9385dce5f79b5d28ef90baff"
+    }
+  },
+  "qualification": {
+    "build": {
+      "exit_code": 0,
+      "passed": true
+    },
+    "qwen-state-storage": {
+      "exit_code": 0,
+      "passed": true
+    },
+    "gdn-metal": {
+      "exit_code": 0,
+      "passed": true
+    },
+    "runtime-resources": {
+      "exit_code": 0,
+      "passed": true
+    }
+  },
+  "shader_validation": "MTL_SHADER_VALIDATION=1",
+  "model_smoke": "passed; see native-smoke.json and NATIVE_SMOKE_RESULTS.txt"
+}

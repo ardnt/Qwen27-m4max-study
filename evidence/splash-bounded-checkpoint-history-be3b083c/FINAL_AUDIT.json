@@ -1,0 +1,166 @@
+{
+  "schema": 1,
+  "outcome": "passed",
+  "verified_utc": "2026-10-14T11:14:39.992884+00:00",
+  "scope": "All listed files in the final ready package; FINAL_AUDIT.json itself excluded. No tests, builds, model loads or network operations were run during this audit.",
+  "submission_base": "be3b083c5f413673d44e44881042e875e674e333",
+  "historical_performance_base": "742ceb482c51f91b381901bb71ae6cc9facbde23",
+  "reviewed_files": 28,
+  "reviewed_bytes": 272092,
+  "json_files_parsed": 18,
+  "findings": [],
+  "checks": {
+    "credentials_private_keys_email_addresses_or_machine_private_paths_found": false,
+    "private_or_production_prompts_found": false,
+    "only_wholly_synthetic_prompt_recipe_and_answer_tokens_included": true,
+    "proposed_patch_sha256_matches_receipt": true,
+    "patch_scope": "Six runtime files and five focused CPU test files only; no diagnostic harness, observation overlays, benchmark runner, raw corpus, binaries or unrelated characterization artifacts.",
+    "source_pin_and_final_status_consistent": true,
+    "native_smoke_claims_match_both_six_request_records": true,
+    "native_smoke_raw_evidence_hashes_verified": 21,
+    "native_qualification_product_manifests_match": true,
+    "CPU_and_sanitizer_results_consistent": true,
+    "command_placeholders_working_directories_and_CPU_toolchain_override_documented": true,
+    "sanitizer_scope_qualified_to_linked_CPU_translation_units": true,
+    "old_eight_file_evidence_copied_unchanged": true,
+    "historical_7_54_percent_and_22_46_seconds_recomputed": true,
+    "no_new_base_performance_claim": true,
+    "real_yield_and_post_command_fallback_not_exercised_and_disclosed": true,
+    "oracle_not_claimed_as_full_real_model_run_or_numerical_equivalence": true,
+    "frozen_integrated_runtime_hashes_match": true,
+    "no_universal_387_or_361_placement_or_default_superiority_claim": true,
+    "prior_audits_preserved": [
+      {
+        "audit": "evidence/audit.json",
+        "listed_files_verified": 15
+      },
+      {
+        "audit": "evidence/measured-742ceb48/audit.json",
+        "listed_files_verified": 7
+      }
+    ]
+  },
+  "intentional_public_path_literals": [
+    "/dev/null in the standard unified patch header",
+    "/usr/bin/python3 as a standard macOS executable description; no user-specific path"
+  ],
+  "limitations": [
+    "Credential-pattern scanning plus allowlisted content review is not a universal secret-detection guarantee.",
+    "This compact command/result record is not a self-contained native benchmark distribution; the diagnostic harness and raw evidence remain preserved separately.",
+    "One diagnostic sequence per arm confirms this integration fixture; it does not establish general numerical equivalence or a new performance estimate."
+  ],
+  "files": {
+    "COMMANDS.txt": {
+      "bytes": 2563,
+      "sha256": "e9169b57791a36eaf137910a91933dd4ea91e046cccb709dbe52df5333463963"
+    },
+    "PATCH_RECEIPT.json": {
+      "bytes": 1776,
+      "sha256": "53e36a609deda168d87c981b12759143bfc867e364ffad92bb0a69cf60fc0238"
+    },
+    "PR_BODY.txt": {
+      "bytes": 5901,
+      "sha256": "399696a57e4b05da1f2859db710fa6d24f13e108f54428b8dfcabe82c2aca25d"
+    },
+    "PR_TITLE.txt": {
+      "bytes": 68,
+      "sha256": "42d692bee36f35da9ab68b448046cf693c1f59ba65d7ac720d85eb2f3bb9601d"
+    },
+    "STATUS.json": {
+      "bytes": 735,
+      "sha256": "7d49a2e4d260d5058f0b7e0b621902f3eaa7c0c811746e9ced8f8165ddd925fb"
+    },
+    "evidence/README.txt": {
+      "bytes": 2249,
+      "sha256": "c6a7dac3bfe8da8c807bd0e4437db05b32d4f8ce460773cfc3e89ac988b075a0"
+    },
+    "evidence/audit.json": {
+      "bytes": 3506,
+      "sha256": "6b14d323e7d5fb9658d88b70ba1a276721eb03c69cd2d128476d0ed932830159"
+    },
+    "evidence/integrated-be3b083/NATIVE_SMOKE_RESULTS.txt": {
+      "bytes": 3393,
+      "sha256": "8fe3b904351c4289c7eed84d2a68d9808d5183d5386248ef430c43887e5e2609"
+    },
+    "evidence/integrated-be3b083/TEST_RESULTS.json": {
+      "bytes": 2730,
+      "sha256": "28364b53be7c5ee9b68b60b28db60b247418cc03dcfb00fee5caef1900e78f48"
+    },
+    "evidence/integrated-be3b083/TEST_RESULTS.txt": {
+      "bytes": 2495,
+      "sha256": "aee4d3f142e2e658dac5ea50a6966b030182deebb2929d7026d80c4f0e55bbb4"
+    },
+    "evidence/integrated-be3b083/cpu-commands-portable.json": {
+      "bytes": 8383,
+      "sha256": "7a3dd5a6a5a87fce75ea8265be4ebcd5a0485114721b345c169bc748963e4141"
+    },
+    "evidence/integrated-be3b083/cpu-source-checks.json": {
+      "bytes": 4749,
+      "sha256": "4ad6a4de1aba41a356bf6a3ff40ae076d1951674dbcbbc4e9ce64a663c917666"
+    },
+    "evidence/integrated-be3b083/machine-final-state.json": {
+      "bytes": 337,
+      "sha256": "0424cbe80e686b16aac65a6832ebd9ab8ca5505f450614917924d95fa8ca0579"
+    },
+    "evidence/integrated-be3b083/native-commands-portable.json": {
+      "bytes": 12722,
+      "sha256": "466aa6671544f1190acd49035e2b5c5005bdd727d41bcc175964a394d2414691"
+    },
+    "evidence/integrated-be3b083/native-qualification.json": {
+      "bytes": 1582,
+      "sha256": "ad4900789369c891098672aa63f4e835eca52d54e752f679cdccb8c140d8af73"
+    },
+    "evidence/integrated-be3b083/native-smoke.json": {
+      "bytes": 81064,
+      "sha256": "8e62443686ca8a9dd086b16ad59520be121beab341934506278e833bae77f665"
+    },
+    "evidence/integrated-be3b083/preservation.json": {
+      "bytes": 264,
+      "sha256": "e4943a3084230880b09e1f66f61ffa9bd2a32c9ef795f2ea64c80d49461d3601"
+    },
+    "evidence/integrated-be3b083/provenance.json": {
+      "bytes": 13562,
+      "sha256": "2bbdc6bbe182665c8675a32b43338e99a1e812999f3267e49a6b3c6cd6299a17"
+    },
+    "evidence/integrated-be3b083/source-status.json": {
+      "bytes": 5437,
+      "sha256": "56e52d3bbde45ee7715bf1f5684571cbf04221530a27abed90326bc69be1a60a"
+    },
+    "evidence/measured-742ceb48/README.txt": {
+      "bytes": 3902,
+      "sha256": "8b3284fd1c24d2c76325aec0c86b5d1f29e21510335eb3c075790bd8ccf19bdb"
+    },
+    "evidence/measured-742ceb48/audit.json": {
+      "bytes": 2128,
+      "sha256": "31063a12910206c4733a7696f5fbc4c1377b78086fdfd39140d6bffc93bc91eb"
+    },
+    "evidence/measured-742ceb48/commands-portable.json": {
+      "bytes": 3557,
+      "sha256": "81ad86d0487663c6eacf395af9a4785de062ab133619a49d3694098c95219e8e"
+    },
+    "evidence/measured-742ceb48/commands.txt": {
+      "bytes": 5273,
+      "sha256": "80c2d4f307a7a700e3d6c8e5d42e991b3d47c12352a4a39b9635d13b1cd7a46b"
+    },
+    "evidence/measured-742ceb48/measured-results.json": {
+      "bytes": 11243,
+      "sha256": "00c1c7af70871e3ef5287734e44b1d6c5bd7c3b188f80ea8363d32073e45ab54"
+    },
+    "evidence/measured-742ceb48/protocol.json": {
+      "bytes": 12252,
+      "sha256": "31aeecb92fe89ebdf9f59f84b42d1c151f177c700bb152a1bac8c593db8f515e"
+    },
+    "evidence/measured-742ceb48/provenance.json": {
+      "bytes": 10143,
+      "sha256": "37558c713a7997cbb18151c10aa54df7872a39848deb9b27329c6e499a1c10b6"
+    },
+    "evidence/measured-742ceb48/synthetic-corpus-recipe.txt": {
+      "bytes": 8319,
+      "sha256": "b5f3f64785c29d2c15c76d0bba8c94056c054b31231e900628b422b874abec39"
+    },
+    "runtime-pr.diff": {
+      "bytes": 61759,
+      "sha256": "52f46311bee491e093fc965c38d8f6095ef2ab820511c22a3f4106b5a595f922"
+    }
+  }
+}

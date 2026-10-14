@@ -1,0 +1,118 @@
+{
+  "submission_base": "be3b083c5f413673d44e44881042e875e674e333",
+  "final_ASan_UBSan_source_receipts": [
+    {
+      "label": "candidate-cache-asan-ubsan-r4",
+      "linked_translation_units_and_headers": 138,
+      "all_input_hashes_match_final_candidate": true,
+      "original_manifest_sha256": "e25b1c7aa1a0e39efb5162aeef0d1ef53908cae85e07d5ad706a08d1e4fd4db1"
+    },
+    {
+      "label": "candidate-engine-asan-ubsan-r4",
+      "linked_translation_units_and_headers": 140,
+      "all_input_hashes_match_final_candidate": true,
+      "original_manifest_sha256": "605f88a087ef486f4b9e1d9cbd2b288fb3ea0959f050b18b003fece2520fc03f"
+    }
+  ],
+  "supplemental_CPU_checks": [
+    {
+      "suite": "memory-governor",
+      "kind": "model-free CPU test",
+      "build_exit": 0,
+      "run_exit": 0,
+      "last_output_line": "memory governor tests passed",
+      "run_log_sha256": "606971f8e3e7f5fdd6b98db6b168c31f1a146c20d98d2e239b8a52ae5d760c07",
+      "compiled_sources_still_match": [
+        {
+          "source": "runtime/metal/DeviceCapabilities.cpp",
+          "sha256": "d297caa30e20342a1a77033f172ba7c37d82d470a754a7d8b41be0dc9cfaa891"
+        },
+        {
+          "source": "runtime/engine/MemoryPlan.cpp",
+          "sha256": "16cf5b0c5a41101cc067678922b1ca0ea9063b2afa221ca369a406c3b412d310"
+        },
+        {
+          "source": "runtime/engine/MemoryGovernor.cpp",
+          "sha256": "48040e3d889c5e15f012f93cbff54e3383ff12fc529b2c61b8e374512ba4194a"
+        },
+        {
+          "source": "dev/tests/engine/memory_governor_test.cpp",
+          "sha256": "a210085c472df467a83419098f7d87703616862cd4605f4026397ab70f861506"
+        }
+      ]
+    },
+    {
+      "suite": "native-engine-loop",
+      "kind": "model-free CPU test",
+      "build_exit": 0,
+      "run_exit": 0,
+      "last_output_line": "native engine loop tests passed",
+      "run_log_sha256": "bd0b2e4d23e974c5b144846c792efb5efed2d4d1ec1eef473ec8a29d2ae25e10",
+      "compiled_sources_still_match": [
+        {
+          "source": "runtime/engine/Scheduler.cpp",
+          "sha256": "6b11045a0d8834f962fef344378d7058668f489c9aac8bd542afec5c2da3abdb"
+        },
+        {
+          "source": "runtime/model/DraftContextPlan.cpp",
+          "sha256": "ddf997a015417f50e31fea53fc0f96e8b20c68f5c85634dd49b2ca873e8d5535"
+        },
+        {
+          "source": "runtime/engine/KvPool.cpp",
+          "sha256": "f6e10c17c9fbd93705749ad819a1c3c8c2775118aa2d16d1571ee2344eaaefcf"
+        },
+        {
+          "source": "runtime/engine/KvCache.cpp",
+          "sha256": "c328eb84a9a4c3a74e45d6211107455fd64829a6fd69c949bf94effbc620049d"
+        },
+        {
+          "source": "runtime/engine/StateCache.cpp",
+          "sha256": "1c9df60056b5a88676de2472e07a222e5fa989994a04d1b616619d262137c129"
+        },
+        {
+          "source": "runtime/engine/Cache.cpp",
+          "sha256": "8bd2077dd6d09b17bea88801b4cd5987895b6bb25d2fe98a729f0591a04b5d8a"
+        },
+        {
+          "source": "runtime/engine/WriteBehind.cpp",
+          "sha256": "6f054c8a48c88af992904175275b832416fe892a645354adf1da405962abc0c1"
+        },
+        {
+          "source": "runtime/engine/Engine.cpp",
+          "sha256": "aa151f07cde52c8619bba91d4f972887ee3541d352a9a2a1ae454ba442209437"
+        },
+        {
+          "source": "runtime/engine/Protocol.cpp",
+          "sha256": "719686c238247a933a81d868c730110961640cebc644f17afad0db4683b83f8e"
+        },
+        {
+          "source": "runtime/engine/NativeRuntime.cpp",
+          "sha256": "3e86f74aaeb32e15f5b1ea2dabef51e14b3dec2fda7aec39a02ff9e482e05cda"
+        },
+        {
+          "source": "runtime/engine/MemoryGovernor.cpp",
+          "sha256": "48040e3d889c5e15f012f93cbff54e3383ff12fc529b2c61b8e374512ba4194a"
+        },
+        {
+          "source": "runtime/engine/MemoryControl.cpp",
+          "sha256": "3cb69b1c7f1a54ba3fcac9810d5b712755cc3649762f45af370c155b02fd06ca"
+        },
+        {
+          "source": "dev/tests/engine/ProtocolPeer.cpp",
+          "sha256": "c910b3cf66a8194d9d97bf6d333cd2585cb8269d9b27e5b67041648e2b09053b"
+        },
+        {
+          "source": "dev/tests/engine/native_engine_loop_test.cpp",
+          "sha256": "0c120d39fd729e0da3cd341b21fbb76d9f64beed55bb2983df23823814856245"
+        }
+      ]
+    }
+  ],
+  "sanitizer_options": {
+    "ASAN_OPTIONS": "detect_leaks=0:abort_on_error=1",
+    "UBSAN_OPTIONS": "halt_on_error=1:print_stacktrace=1"
+  },
+  "LeakSanitizer": "Unavailable on this Apple runtime; not claimed.",
+  "native_validation_status": "Not assessed in this CPU/source extract. The native-engine-loop name above is an existing model-free CPU suite, not a Metal/model smoke.",
+  "performance_status": "No benchmark rerun and no timing claim on this submission base."
+}

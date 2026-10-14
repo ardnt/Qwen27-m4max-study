@@ -1,0 +1,341 @@
+{
+  "schema": 1,
+  "measured_source_pin": "742ceb482c51f91b381901bb71ae6cc9facbde23",
+  "arms": {
+    "A2": "Unmodified pinned upstream, common measurement hooks only.",
+    "C2": "Same pinned upstream plus the complete bounded-retention/history-yield runtime candidate and common measurement hooks."
+  },
+  "host": {
+    "device": "Apple M4 Max",
+    "physical_memory_bytes": 38654705664,
+    "macOS": "26.5.2",
+    "Xcode": "26.5"
+  },
+  "model": {
+    "target": "orcarouter/Qwen3.8-27B-Uncensored-MLX",
+    "target_config_architecture": "Qwen3_5ForConditionalGeneration",
+    "target_quantization": {
+      "bits": 4,
+      "group_size": 64,
+      "mode": "affine"
+    },
+    "draft": "z-lab/Qwen3.8-27B-DFlash2",
+    "draft_dtype": "bfloat16",
+    "dflash_config": {
+      "block_size": 8,
+      "conv_group_size": 16,
+      "conv_kernel_size": 2,
+      "mask_token_id": 248070,
+      "selector_rank": 256,
+      "selector_top_k": 16,
+      "target_layer_ids": [
+        5,
+        19,
+        33,
+        47,
+        61
+      ]
+    },
+    "draft_sliding_window": 2048,
+    "draft_proposal_tokens": 7,
+    "draft_query_rows": 8,
+    "target_verify_rows": 8,
+    "same_canonical_local_weights_in_both_arms": true,
+    "weight_identity_limit": "Weight path/stat identity was rechecked before each arm; a fresh full weight-content hash was not performed. Config/tokenizer hashes are recorded below."
+  },
+  "model_files": [
+    {
+      "relative": "config.json",
+      "bytes": 5187,
+      "sha256": "f238d3a11e8d96b4f688fd09c627879b9b87a067835c83cb7c1c102df7aa4fb0"
+    },
+    {
+      "relative": "draft/config.json",
+      "bytes": 1239,
+      "sha256": "873e3556509b0da06e29654ba00d4944888d4b5e8a33afde25f7eb27d321e980"
+    },
+    {
+      "relative": "draft/model.safetensors",
+      "bytes": 3848817896,
+      "sha256": null,
+      "hash_note": "Weight bytes not read or freshly hashed in Stage 1; canonical file/stat identity recorded."
+    },
+    {
+      "relative": "model.json",
+      "bytes": 5312,
+      "sha256": "787acd41cf142719b3b2e2cafc622acb8e3dd22d16964bf7ab4439aa234d5d05"
+    },
+    {
+      "relative": "target/config.json",
+      "bytes": 5187,
+      "sha256": "f238d3a11e8d96b4f688fd09c627879b9b87a067835c83cb7c1c102df7aa4fb0"
+    },
+    {
+      "relative": "target/model-00001-of-00003.safetensors",
+      "bytes": 5343268752,
+      "sha256": null,
+      "hash_note": "Weight bytes not read or freshly hashed in Stage 1; canonical file/stat identity recorded."
+    },
+    {
+      "relative": "target/model-00002-of-00003.safetensors",
+      "bytes": 5354185100,
+      "sha256": null,
+      "hash_note": "Weight bytes not read or freshly hashed in Stage 1; canonical file/stat identity recorded."
+    },
+    {
+      "relative": "target/model-00003-of-00003.safetensors",
+      "bytes": 5357087747,
+      "sha256": null,
+      "hash_note": "Weight bytes not read or freshly hashed in Stage 1; canonical file/stat identity recorded."
+    },
+    {
+      "relative": "tokenizer/chat_template.jinja",
+      "bytes": 8952,
+      "sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041"
+    },
+    {
+      "relative": "tokenizer/config.json",
+      "bytes": 5187,
+      "sha256": "f238d3a11e8d96b4f688fd09c627879b9b87a067835c83cb7c1c102df7aa4fb0"
+    },
+    {
+      "relative": "tokenizer/tokenizer.json",
+      "bytes": 19989325,
+      "sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523"
+    },
+    {
+      "relative": "tokenizer/tokenizer_config.json",
+      "bytes": 1165,
+      "sha256": "792fa3f0cb88b111e54ef3134c873531008c4df471d108da17903426e308aa7b"
+    },
+    {
+      "relative": "tokenizer/vocab.json",
+      "bytes": 6722759,
+      "sha256": "ce99b4cb2983d118806ce0a8b777a35b093e2000a503ebde25853284c9dfa003"
+    },
+    {
+      "relative": "vision/config.json",
+      "bytes": 5187,
+      "sha256": "f238d3a11e8d96b4f688fd09c627879b9b87a067835c83cb7c1c102df7aa4fb0"
+    },
+    {
+      "relative": "vision/model-00001-of-00003.safetensors",
+      "bytes": 5343268752,
+      "sha256": null,
+      "hash_note": "Weight bytes not read or freshly hashed in Stage 1; canonical file/stat identity recorded."
+    }
+  ],
+  "runtime": {
+    "maximum_memory_bytes": 25000000000,
+    "actual_governor_limit_bytes": 25000000000,
+    "maximum_context": 32768,
+    "kv_format": "bf16",
+    "state_format": "fp32",
+    "ane_share": 0,
+    "temperature": 0,
+    "seed": 0,
+    "max_new_tokens": 32,
+    "ignore_eos": false,
+    "history_stride_tokens": 8192,
+    "candidate_history_count_limit": 2,
+    "snapshot_payload_bytes": 160038912,
+    "candidate_history_byte_limit": 320077824,
+    "baseline_history_byte_limit": 0,
+    "disk_cache_automatic": false,
+    "disk_cache_bytes": 0,
+    "persistent_cache": false,
+    "disk_writes_per_day": 0,
+    "cache_root": "empty string; prevents startup cache enumeration/cleanup",
+    "disk_absence_verified_at_starts": 16,
+    "observed_disk_resources": "No disk budget, staging, KV tier, state file, or persistent directory."
+  },
+  "corpus": {
+    "purpose": "fixed synthetic checkpoint-history sequence",
+    "binary_sha256": "903d4a94db2cc5512da74f1e8d93eff67e92d0106f6b068d8cf4957c18800816",
+    "original_manifest_sha256": "0d9e3be78d1d0ba70e82fa079a8b603d9ecd2e2fe458cf1cccb1624c048436d2",
+    "generator_sha256": "95789ac0f63cb115ec94b5f05b57227416b55129ec1ea6cfa4c68184a5283bf4",
+    "tokenizer_class": "Qwen2Tokenizer",
+    "libraries": {
+      "transformers": "5.15.1",
+      "tokenizers": "0.22.2"
+    },
+    "tokenizer_files": {
+      "tokenizer.json": {
+        "bytes": 19989325,
+        "sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523"
+      },
+      "tokenizer_config.json": {
+        "bytes": 1165,
+        "sha256": "792fa3f0cb88b111e54ef3134c873531008c4df471d108da17903426e308aa7b"
+      },
+      "chat_template.jinja": {
+        "bytes": 8952,
+        "sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041"
+      },
+      "config.json": {
+        "bytes": 5187,
+        "sha256": "f238d3a11e8d96b4f688fd09c627879b9b87a067835c83cb7c1c102df7aa4fb0"
+      },
+      "vocab.json": {
+        "bytes": 6722759,
+        "sha256": "ce99b4cb2983d118806ce0a8b777a35b093e2000a503ebde25853284c9dfa003"
+      }
+    },
+    "requests": [
+      {
+        "index": 0,
+        "name": "smoke",
+        "token_count": 30,
+        "lcp_with_previous": null,
+        "token_sha256": "fb3b2aadb68f4fc053559c8a470ff7d68adef41d93c1e3cd6f2115fa55790bcc"
+      },
+      {
+        "index": 1,
+        "name": "cold_prime",
+        "token_count": 12201,
+        "lcp_with_previous": null,
+        "token_sha256": "ae4946330e9b5d75c660514f44508b4617c0740637ff2180a3629d16d3da930f"
+      },
+      {
+        "index": 2,
+        "name": "grow_history",
+        "token_count": 30201,
+        "lcp_with_previous": 12201,
+        "token_sha256": "b1b3fe4f2ce29a660043c2a161b8b9fab5c4c51762826204bbb91e72a1c41280"
+      },
+      {
+        "index": 3,
+        "name": "older_edit",
+        "token_count": 30201,
+        "lcp_with_previous": 18000,
+        "token_sha256": "18d0dd879b48ebf0087e110de1b843374bc3aaaad8710d21f1c8532b0be7bf45"
+      },
+      {
+        "index": 4,
+        "name": "latest_edit",
+        "token_count": 30201,
+        "lcp_with_previous": 30000,
+        "token_sha256": "ddcc082c887e6fdc7b85b3e59ada82be0f7e08406accf29a97e090cb52d19660"
+      },
+      {
+        "index": 5,
+        "name": "exact_repeat",
+        "token_count": 30201,
+        "lcp_with_previous": 30201,
+        "token_sha256": "ddcc082c887e6fdc7b85b3e59ada82be0f7e08406accf29a97e090cb52d19660"
+      },
+      {
+        "index": 6,
+        "name": "ordinary_append",
+        "token_count": 30403,
+        "lcp_with_previous": 30201,
+        "token_sha256": "87e6f55f8c5fcdb6c11374aa056bfdfc69be7e4d476b166b3cfe63ed7332bf7e"
+      }
+    ],
+    "edits": [
+      {
+        "request": "older_edit",
+        "begin": 18000,
+        "tokens": 200
+      },
+      {
+        "request": "latest_edit",
+        "begin": 30000,
+        "tokens": 128
+      }
+    ],
+    "recipe_file": "synthetic-corpus-recipe.txt",
+    "request_dependency": "Six fixed token arrays in order: cold prime, grow using a canned answer, older edit of grow, latest edit of older edit, exact repeat, append preserving both edits. Generated output never changes the next input.",
+    "caveat": "Token-slice edits are synthetic and may cut inside a tokenized word; canned replies do not depend on generated output."
+  },
+  "comparison": {
+    "correctness_smoke": "Two requests per arm, diagnostic builds; excluded from timing.",
+    "pair_order": [
+      "AC",
+      "CA",
+      "AC",
+      "CA",
+      "AC",
+      "CA",
+      "AC"
+    ],
+    "pair_order_aliases": {
+      "A": "A2",
+      "C": "C2"
+    },
+    "pairs": 7,
+    "fresh_process_and_runtime_cache_each_arm": true,
+    "one_model_process_at_a_time": true,
+    "isolated_temporary_root_each_process": true,
+    "os_file_caches_purged": false,
+    "unrelated_inference_checked": true,
+    "sequence_metric": "Native Engine E2E for six dependency-ordered requests, startup excluded; fixed inter-request checks included. Not HTTP latency.",
+    "observations": "Common lightweight buffered hooks in both timed arms; detailed diagnostic tracing separate. Normal candidate policy bookkeeping remained in timed cost.",
+    "process_memory_sample_interval_seconds": 1,
+    "builds": "Four independent clean builds: A2 and C2, each timed and diagnostic. Common optimization/SDK settings; candidate feature API flags only expose the opt-in driver setting.",
+    "frozen_before_outcomes": true,
+    "no_budget_reduction_to_force_yielding": true
+  },
+  "qualification": {
+    "existing_A2_cache_and_engine_CPU": "passed",
+    "C2_policy_tests": 15,
+    "C2_reservation_seam_functions": 7,
+    "C2_reservation_seam_executions": 8,
+    "C2_existing_cache_and_engine_CPU": "passed",
+    "C2_ASan_UBSan": "passed on revised source",
+    "LeakSanitizer": "unsupported on this Apple runtime; disabled, no leak-sanitizer coverage",
+    "native_clean_builds": {
+      "timed": {
+        "A": {
+          "source": "A2",
+          "exit_code": 0,
+          "products_verified": 4
+        },
+        "C": {
+          "source": "C2",
+          "exit_code": 0,
+          "products_verified": 5
+        }
+      },
+      "diagnostic": {
+        "A": {
+          "source": "A2",
+          "exit_code": 0,
+          "products_verified": 4
+        },
+        "C": {
+          "source": "C2",
+          "exit_code": 0,
+          "products_verified": 5
+        }
+      }
+    },
+    "Qwen_state_storage_Metal": {
+      "exit_code": 0,
+      "elapsed_seconds": 3.902934458004893
+    },
+    "GDN_Metal": {
+      "exit_code": 0,
+      "elapsed_seconds": 6.693536999999196
+    },
+    "Metal_shader_validation": true
+  },
+  "pressure_evidence": {
+    "real_model_history_yields": 0,
+    "real_model_reservation_denials": 0,
+    "real_model_evictions": 0,
+    "real_model_failed_publications": 0,
+    "pressure_policy_evidence_scope": "CPU fixtures only. A shared byte ledger accounts for mock state and KV; a 324-byte fixture yields an eligible 64-byte optional state when only a 4-byte KV extent otherwise fits. These numbers are synthetic, not real-memory measurements.",
+    "protected_cases": "Generation identity; leases; promotion; unfinished shared owners; pinned predecessor; outstanding writes; pending reservations; bounded non-memory refusal; command completion versus cancellation; native replay retarget fallback.",
+    "interface_limit": "A nullable reservation result does not reliably identify every refusal cause. Bounded eligible history can be lost after a non-memory refusal."
+  },
+  "limitations": [
+    "No real-model pressure-yield evidence.",
+    "No numerical-equivalence claim from output tokens.",
+    "No default-configuration superiority claim; disk caching was disabled in both arms.",
+    "No universal #387 fix or #361 near-edit placement fix.",
+    "Draft context rows exclude restore-ring reconstruction.",
+    "Request-end accounting and one-second process samples are not continuous allocation peaks.",
+    "Later submission-base qualification is separate from these historical measurements."
+  ]
+}

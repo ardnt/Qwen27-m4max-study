@@ -1,0 +1,56 @@
+{
+  "base": "be3b083c5f413673d44e44881042e875e674e333",
+  "policy_test_functions": 15,
+  "enabled_engine_test_functions": 10,
+  "enabled_engine_executions": 19,
+  "tests": [
+    {
+      "label": "candidate-cache-cpu-r1",
+      "build_exit": 0,
+      "run_exit": 0,
+      "run_output": "engine cache tests passed\n",
+      "build_command_file": "candidate-cache-cpu-r1.build-command.json",
+      "run_command_file": "candidate-cache-cpu-r1.run-command.json",
+      "source_hashes_file": "candidate-cache-cpu-r1.build-inputs.json"
+    },
+    {
+      "label": "candidate-engine-cpu-r3",
+      "build_exit": 0,
+      "run_exit": 0,
+      "run_output": "engine tests passed\n",
+      "build_command_file": "candidate-engine-cpu-r3.build-command.json",
+      "run_command_file": "candidate-engine-cpu-r3.run-command.json",
+      "source_hashes_file": "candidate-engine-cpu-r3.build-inputs.json"
+    },
+    {
+      "label": "candidate-cache-asan-ubsan-r4",
+      "build_exit": 0,
+      "run_exit": 0,
+      "run_output": "engine cache tests passed\n",
+      "build_command_file": "candidate-cache-asan-ubsan-r4.build-command.json",
+      "run_command_file": "candidate-cache-asan-ubsan-r4.run-command.json",
+      "source_hashes_file": "candidate-cache-asan-ubsan-r4.build-inputs.json"
+    },
+    {
+      "label": "candidate-engine-asan-ubsan-r4",
+      "build_exit": 0,
+      "run_exit": 0,
+      "run_output": "engine tests passed\n",
+      "build_command_file": "candidate-engine-asan-ubsan-r4.build-command.json",
+      "run_command_file": "candidate-engine-asan-ubsan-r4.run-command.json",
+      "source_hashes_file": "candidate-engine-asan-ubsan-r4.build-inputs.json"
+    }
+  ],
+  "preserved_failure": {
+    "label": "candidate-engine-cpu-r1",
+    "cause": "Test-only compilation error: used nonexistent CacheProbe.stateBlock. Corrected to existing Cache.blockAt; no runtime change."
+  },
+  "sanitizer_note": "AddressSanitizer and UndefinedBehaviorSanitizer enabled for all linked runtime translation units. Apple LeakSanitizer unavailable: ASAN_OPTIONS=detect_leaks=0:abort_on_error=1. No model or GPU work in these checks.",
+  "final_test_hashes": {
+    "dev/tests/engine/CheckpointHistoryCacheTests.hpp": "d55740ef185c8cb25d2985affd828d7f3cb858cdaf7c0db1317de876e4eb7a94",
+    "dev/tests/engine/CheckpointHistoryTests.hpp": "f46d3b3e9d78b7e2a53c545ecc6e25dacd4398f7a9d7ae02facc3cb132377ef6",
+    "dev/tests/engine/TestExecutor.hpp": "c9125a939ce981a788c9ee38b86c033a116b406e3580612bfada360219b81af1",
+    "dev/tests/engine/engine_cache_test.cpp": "acf4e96353caa3ed72e45aadf11d9d17a461570016026cec8a1b1d101eeebae7",
+    "dev/tests/engine/engine_test.cpp": "800cf4cd1535880db23d1b8761fb338b82fdaeec73627059e8138e4e3bb5a690"
+  }
+}

@@ -1,0 +1,219 @@
+{
+  "submission_base": "be3b083c5f413673d44e44881042e875e674e333",
+  "notes": [
+    "Exact completed compiler/run command records. Only private absolute prefixes were replaced with placeholders.",
+    "These argv arrays are data; shell quoting must be applied if translating to a shell.",
+    "No command was executed while creating this evidence set.",
+    "<ROOT> denotes the isolated submission workspace, with candidate/, private-evidence/integration-tests/ and checks/; <XCODE_DEVELOPER_DIR> denotes the local Xcode toolchain."
+  ],
+  "commands": {
+    "private-evidence/integration-tests/candidate-cache-cpu-r1.build-command.json": [
+      "xcrun",
+      "-sdk",
+      "macosx",
+      "clang++",
+      "-std=c++20",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-I<ROOT>/candidate/runtime",
+      "-I<ROOT>/candidate/dev",
+      "-mmacosx-version-min=26.4",
+      "-O2",
+      "<ROOT>/candidate/runtime/engine/KvPool.cpp",
+      "<ROOT>/candidate/runtime/engine/KvCache.cpp",
+      "<ROOT>/candidate/runtime/engine/StateCache.cpp",
+      "<ROOT>/candidate/runtime/engine/Cache.cpp",
+      "<ROOT>/candidate/runtime/engine/WriteBehind.cpp",
+      "<ROOT>/candidate/runtime/model/SlotFile.cpp",
+      "<ROOT>/candidate/dev/tests/engine/engine_cache_test.cpp",
+      "-o",
+      "<ROOT>/private-evidence/integration-tests/candidate-cache-cpu-r1"
+    ],
+    "private-evidence/integration-tests/candidate-cache-cpu-r1.run-command.json": {
+      "command": [
+        "<ROOT>/private-evidence/integration-tests/candidate-cache-cpu-r1"
+      ],
+      "environment": {
+        "TMPDIR": "<ROOT>/private-evidence/integration-tests/candidate-cache-cpu-r1-scratch"
+      }
+    },
+    "private-evidence/integration-tests/candidate-engine-cpu-r3.build-command.json": [
+      "xcrun",
+      "-sdk",
+      "macosx",
+      "clang++",
+      "-std=c++20",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-I<ROOT>/candidate/runtime",
+      "-I<ROOT>/candidate/dev",
+      "-mmacosx-version-min=26.4",
+      "-O2",
+      "<ROOT>/candidate/runtime/engine/Scheduler.cpp",
+      "<ROOT>/candidate/runtime/model/DraftContextPlan.cpp",
+      "<ROOT>/candidate/runtime/engine/KvPool.cpp",
+      "<ROOT>/candidate/runtime/engine/KvCache.cpp",
+      "<ROOT>/candidate/runtime/engine/StateCache.cpp",
+      "<ROOT>/candidate/runtime/engine/Cache.cpp",
+      "<ROOT>/candidate/runtime/engine/WriteBehind.cpp",
+      "<ROOT>/candidate/runtime/engine/Engine.cpp",
+      "<ROOT>/candidate/dev/tests/engine/engine_test.cpp",
+      "-o",
+      "<ROOT>/private-evidence/integration-tests/candidate-engine-cpu-r3"
+    ],
+    "private-evidence/integration-tests/candidate-engine-cpu-r3.run-command.json": {
+      "command": [
+        "<ROOT>/private-evidence/integration-tests/candidate-engine-cpu-r3"
+      ],
+      "environment": {
+        "TMPDIR": "<ROOT>/private-evidence/integration-tests/candidate-engine-cpu-r3-scratch"
+      }
+    },
+    "private-evidence/integration-tests/candidate-cache-asan-ubsan-r4.build-command.json": [
+      "xcrun",
+      "-sdk",
+      "macosx",
+      "clang++",
+      "-std=c++20",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-I<ROOT>/candidate/runtime",
+      "-I<ROOT>/candidate/dev",
+      "-mmacosx-version-min=26.4",
+      "-O1",
+      "-g",
+      "-fno-omit-frame-pointer",
+      "-fsanitize=address,undefined",
+      "<ROOT>/candidate/runtime/engine/KvPool.cpp",
+      "<ROOT>/candidate/runtime/engine/KvCache.cpp",
+      "<ROOT>/candidate/runtime/engine/StateCache.cpp",
+      "<ROOT>/candidate/runtime/engine/Cache.cpp",
+      "<ROOT>/candidate/runtime/engine/WriteBehind.cpp",
+      "<ROOT>/candidate/runtime/model/SlotFile.cpp",
+      "<ROOT>/candidate/dev/tests/engine/engine_cache_test.cpp",
+      "-o",
+      "<ROOT>/private-evidence/integration-tests/candidate-cache-asan-ubsan-r4"
+    ],
+    "private-evidence/integration-tests/candidate-cache-asan-ubsan-r4.run-command.json": {
+      "command": [
+        "<ROOT>/private-evidence/integration-tests/candidate-cache-asan-ubsan-r4"
+      ],
+      "environment": {
+        "TMPDIR": "<ROOT>/private-evidence/integration-tests/candidate-cache-asan-ubsan-r4-scratch",
+        "ASAN_OPTIONS": "detect_leaks=0:abort_on_error=1",
+        "UBSAN_OPTIONS": "halt_on_error=1:print_stacktrace=1"
+      }
+    },
+    "private-evidence/integration-tests/candidate-engine-asan-ubsan-r4.build-command.json": [
+      "xcrun",
+      "-sdk",
+      "macosx",
+      "clang++",
+      "-std=c++20",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-I<ROOT>/candidate/runtime",
+      "-I<ROOT>/candidate/dev",
+      "-mmacosx-version-min=26.4",
+      "-O1",
+      "-g",
+      "-fno-omit-frame-pointer",
+      "-fsanitize=address,undefined",
+      "<ROOT>/candidate/runtime/engine/Scheduler.cpp",
+      "<ROOT>/candidate/runtime/model/DraftContextPlan.cpp",
+      "<ROOT>/candidate/runtime/engine/KvPool.cpp",
+      "<ROOT>/candidate/runtime/engine/KvCache.cpp",
+      "<ROOT>/candidate/runtime/engine/StateCache.cpp",
+      "<ROOT>/candidate/runtime/engine/Cache.cpp",
+      "<ROOT>/candidate/runtime/engine/WriteBehind.cpp",
+      "<ROOT>/candidate/runtime/engine/Engine.cpp",
+      "<ROOT>/candidate/dev/tests/engine/engine_test.cpp",
+      "-o",
+      "<ROOT>/private-evidence/integration-tests/candidate-engine-asan-ubsan-r4"
+    ],
+    "private-evidence/integration-tests/candidate-engine-asan-ubsan-r4.run-command.json": {
+      "command": [
+        "<ROOT>/private-evidence/integration-tests/candidate-engine-asan-ubsan-r4"
+      ],
+      "environment": {
+        "TMPDIR": "<ROOT>/private-evidence/integration-tests/candidate-engine-asan-ubsan-r4-scratch",
+        "ASAN_OPTIONS": "detect_leaks=0:abort_on_error=1",
+        "UBSAN_OPTIONS": "halt_on_error=1:print_stacktrace=1"
+      }
+    },
+    "checks/memory-governor.command.json": [
+      "xcrun",
+      "-sdk",
+      "macosx",
+      "clang++",
+      "-std=c++20",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-I<ROOT>/candidate/runtime",
+      "-I<ROOT>/candidate/dev",
+      "-mmacosx-version-min=26.4",
+      "<ROOT>/candidate/runtime/metal/DeviceCapabilities.cpp",
+      "<ROOT>/candidate/runtime/engine/MemoryPlan.cpp",
+      "<ROOT>/candidate/runtime/engine/MemoryGovernor.cpp",
+      "<ROOT>/candidate/dev/tests/engine/memory_governor_test.cpp",
+      "-o",
+      "<ROOT>/checks/memory-governor"
+    ],
+    "checks/memory-governor.run": {
+      "command": [
+        "<ROOT>/checks/memory-governor"
+      ],
+      "environment": {
+        "DEVELOPER_DIR": "<XCODE_DEVELOPER_DIR>",
+        "TMPDIR": "<ROOT>/checks/memory-governor-tmp"
+      },
+      "record_note": "Exact run invocation reconstructed from preserved run-governor-checks.py; argv contains the one built binary, with the shown environment overrides."
+    },
+    "checks/native-engine-loop.command.json": [
+      "xcrun",
+      "-sdk",
+      "macosx",
+      "clang++",
+      "-std=c++20",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-I<ROOT>/candidate/runtime",
+      "-I<ROOT>/candidate/dev",
+      "-mmacosx-version-min=26.4",
+      "<ROOT>/candidate/runtime/engine/Scheduler.cpp",
+      "<ROOT>/candidate/runtime/model/DraftContextPlan.cpp",
+      "<ROOT>/candidate/runtime/engine/KvPool.cpp",
+      "<ROOT>/candidate/runtime/engine/KvCache.cpp",
+      "<ROOT>/candidate/runtime/engine/StateCache.cpp",
+      "<ROOT>/candidate/runtime/engine/Cache.cpp",
+      "<ROOT>/candidate/runtime/engine/WriteBehind.cpp",
+      "<ROOT>/candidate/runtime/engine/Engine.cpp",
+      "<ROOT>/candidate/runtime/engine/Protocol.cpp",
+      "<ROOT>/candidate/runtime/engine/NativeRuntime.cpp",
+      "<ROOT>/candidate/runtime/engine/MemoryGovernor.cpp",
+      "<ROOT>/candidate/runtime/engine/MemoryControl.cpp",
+      "<ROOT>/candidate/dev/tests/engine/ProtocolPeer.cpp",
+      "<ROOT>/candidate/dev/tests/engine/native_engine_loop_test.cpp",
+      "-o",
+      "<ROOT>/checks/native-engine-loop"
+    ],
+    "checks/native-engine-loop.run": {
+      "command": [
+        "<ROOT>/checks/native-engine-loop"
+      ],
+      "environment": {
+        "DEVELOPER_DIR": "<XCODE_DEVELOPER_DIR>",
+        "TMPDIR": "<ROOT>/checks/native-engine-loop-tmp"
+      },
+      "record_note": "Exact run invocation reconstructed from preserved run-governor-checks.py; argv contains the one built binary, with the shown environment overrides."
+    }
+  }
+}
